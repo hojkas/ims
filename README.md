@@ -9,7 +9,7 @@ Implementujte vlastní diskrétní simulátor založený na procesech nebo udál
 ## Possible components
 
 * Simulátor - založený na procesech nebo událostech, procesy zní víc ez but what do I know
-  * Process - (??) posloupnost akcí jako zaber linku, počkej x, opusť linku...
+  * Proces nebo událost - máme mít buď na tom nebo na tom... prý v demu říkal, že události jsou snazší na implementaci a nemusíme řešit přepínání kontextu and stuff
   * Fronta
   * Linka, sklad (myslím, že to je to samé, jen se to liší v počtu zařízení)
   * Pseudo-náhodné generování čísel pro základní rozložení
