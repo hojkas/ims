@@ -98,3 +98,5 @@ Na cviku myslím zmínil něco ve smyslu, že stačí nějaká z komplikovaněj�
 ## Dokumentace
 
 Welp this will be fun.
+
+Jestli se s tím nechceme srát, jakože ne, udělala bych to prostě v Markdownu, já to pak vezmu, v Typora tomu hodím html flare (jako přední stranu, page breaks, table of contets automaticky z úrovní nadpisů) a vyexportuji. Dělala jsem to tak v IPK a ISA a nestěžovali si a nevypadalo to tak hnusně + close to zero effort :)
