@@ -30,6 +30,39 @@ To by ti nemělo vyhodit žádný error a mělo by to vypsat, že ty komponenty 
 
 Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zvnějšku.
 
+
+## TODOs
+
+### První vlna - Basic event based simulátor
+
+[X] eventy
+
+[X] basic funkce simulátoru, aka práce s časem a next event handling
+
+[X] random number generator (viz přednášky slide 167, tyto implementovat)
+
+### Druhá vlna - SHO
+
+[X] Zapracovat do simulátoru podporu sho, aka věci jako že po eventu co sahá na facility se checkne queue té facility atd
+
+[X] Queue
+
+[X] Storage, Facility
+
+### Třetí vlna - Simulace
+
+[X] Najít ukázkovou netriviální simulaci
+
+[X] Naprogramovat ji pomocí našeho simulátoru
+
+### Čtvrtá vlna - Dokumentace
+
+[X] Dokumentace každé části simulátoru, jak se chovají a jak je zvnějšku používat
+
+[X] U random number generator udělat výstupy z mnohonásobného generování různých rozložení a udělat grafy, aby se ukázalo, že fakt fungují
+
+[X] Dokumentace k simulaci
+
 ## Téma č. 4: Implementace diskrétního simulátoru s podporou SHO
 
 Implementujte vlastní diskrétní simulátor založený na procesech nebo událostech. Implementujte podporu pro SHO (fronty, linky) a generování pseudonáhodných čísel (pro různá rozložení). Demonstrujte na hypotetickém modelu SHO s několika linkami, různými procesy příchodů apod.
