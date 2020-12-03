@@ -7,27 +7,25 @@
 
 #include "discrete_simulator.hpp"
 
-Simulator* init_simulator(double startTime, double endTime)
+//declaring for static Simulator
+std::list<Event*> Simulator::event_queue;
+double Simulator::start_time;
+double Simulator::end_time;
+
+void Simulator::Init(double start_t, double end_t)
 {
-    Simulator* new_s = new Simulator(startTime, endTime);
-    return new_s;
+    start_time = start_t;
+    end_time = end_t;
+    event_queue.clear();
 }
 
-Simulator* init_simulator(double endTime)
+void Simulator::deconstruct()
 {
-    Simulator* new_s = new Simulator(0.0, endTime);
-    return new_s;
-}
-
-Simulator::Simulator(double startTime, double endTime)
-{
-    end_time = endTime;
-    start_time = startTime;
-}
-
-Simulator::~Simulator()
-{
-
+    Event* curr_event = pop_event();
+    while(curr_event != NULL) {
+        delete curr_event;
+        curr_event = pop_event();
+    }
 }
 
 void Simulator::Run()
@@ -35,7 +33,7 @@ void Simulator::Run()
     Event* curr_event = pop_event();
     while(curr_event != NULL) {
         //work out current event and log to stats what's neccessary
-        curr_event->Output();
+        curr_event->Behavior();
 
         //gets new event
         curr_event = pop_event();

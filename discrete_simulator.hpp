@@ -21,19 +21,19 @@ Simulator* init_simulator(double endTime);
 class Simulator
 {
     private:
-        std::list<Event*> event_queue;
+        static std::list<Event*> event_queue;
 
     public:
-        Simulator(double startTime, double endTime);
-        ~Simulator();
+        static void Init(double, double);
+        static void deconstruct();
 
-        void Run();
-        Event* pop_event();
-        void insert_event(Event*);
+        static void Run();
+        static Event* pop_event();
+        static void insert_event(Event*);
 
         //properties
-        double start_time;
-        double end_time;
+        static double start_time;
+        static double end_time;
 };
 
 //events.cpp definitionsS
