@@ -22,7 +22,7 @@ Simulator* init_simulator(double endTime)
 Simulator::Simulator(double startTime, double endTime)
 {
     end_time = endTime;
-    current_time = startTime;
+    start_time = startTime;
 }
 
 Simulator::~Simulator()
@@ -30,6 +30,22 @@ Simulator::~Simulator()
 
 }
 
+void Simulator::Run()
+{
+    Event* curr_event = pop_event();
+    while(curr_event != NULL) {
+        //work out current event and log to stats what's neccessary
+        curr_event->Output();
+
+        //gets new event
+        curr_event = pop_event();
+    }
+}
+
+
+/* Inserts Event e in simulator's event_queue based on its time value
+ * @param Event* Event to insert
+ */
 void Simulator::insert_event(Event* e)
 {
     std::list<Event*>::iterator it;
@@ -43,6 +59,9 @@ void Simulator::insert_event(Event* e)
     event_queue.push_back(e);
 }
 
+/* Removes first Event* from simulator's event_queue and returns it
+ * @return Event* poped from front, the one with lowest time value
+ */
 Event* Simulator::pop_event()
 {
     if(event_queue.size() == 0) return NULL;

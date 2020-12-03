@@ -9,7 +9,6 @@
 // general dependencies
 #include <iostream>
 #include <list>
-#include <tuple>
 
 //general definitions that need to be used before referencing
 class Simulator;
@@ -28,28 +27,28 @@ class Simulator
         Simulator(double startTime, double endTime);
         ~Simulator();
 
+        void Run();
         Event* pop_event();
         void insert_event(Event*);
 
         //properties
-        double current_time;
+        double start_time;
         double end_time;
 };
 
 //events.cpp definitionsS
-void events_loaded_test(); //TODO remove, for initial linking tests
 class Event
 {
     public:
-        Event(Simulator*);
+        Event();
         ~Event();
+        
+        virtual void Behavior() = 0;
 
         //operations
         bool operator<(Event&);
         bool operator>(Event&);
-        
-        std::string msg;
-        Simulator* simulator;
+        std::string name;
         double time;
 };
 

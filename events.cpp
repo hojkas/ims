@@ -6,14 +6,8 @@
 
 #include "discrete_simulator.hpp"
 
-void events_loaded_test()
+Event::Event()
 {
-    std::cout << "events.cpp loaded" << std::endl;
-}
-
-Event::Event(Simulator* sim)
-{
-    simulator = sim;
 }
 
 Event::~Event()
