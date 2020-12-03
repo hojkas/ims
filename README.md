@@ -8,6 +8,26 @@ pokud máš test s mainem v `test.cpp`, jinak
 
 > make test testfile=new_test.cpp
 
+Prvně vytvoříme samotný simulátor, takže ho potřebujeme přes něco testovat. Vytvoři si nějaký cpp soubor, doporučuji `test.cpp` protože to má Makefile hardwired a je to v gitignore.
+
+Pro začátek může vypadat takto:
+
+```cpp
+#include "discreet_simulator.hpp"
+
+int main()
+{
+ simulator_loaded_test();
+ events_loaded_test();
+ sho_loaded_test();
+ random_loaded_test();
+ statistics_loaded_test();
+ return 0;
+}
+```
+
+To by ti nemělo vyhodit žádný error a mělo by to vypsat, že ty komponenty jsou loaded (aka že byly ty funkce součástí make a dobře se nalinkovaly).
+
 ## Téma č. 4: Implementace diskrétního simulátoru s podporou SHO
 
 Implementujte vlastní diskrétní simulátor založený na procesech nebo událostech. Implementujte podporu pro SHO (fronty, linky) a generování pseudonáhodných čísel (pro různá rozložení). Demonstrujte na hypotetickém modelu SHO s několika linkami, různými procesy příchodů apod.
