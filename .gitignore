@@ -1,0 +1,5 @@
+# test file for testing simulator from the outside, test outputs and such
+test*
+
+#vscode mess
+.vscode/*
