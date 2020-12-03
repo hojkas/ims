@@ -28,6 +28,8 @@ int main()
 
 To by ti nemělo vyhodit žádný error a mělo by to vypsat, že ty komponenty jsou loaded (aka že byly ty funkce součástí make a dobře se nalinkovaly).
 
+Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zvnějšku.
+
 ## Téma č. 4: Implementace diskrétního simulátoru s podporou SHO
 
 Implementujte vlastní diskrétní simulátor založený na procesech nebo událostech. Implementujte podporu pro SHO (fronty, linky) a generování pseudonáhodných čísel (pro různá rozložení). Demonstrujte na hypotetickém modelu SHO s několika linkami, různými procesy příchodů apod.
