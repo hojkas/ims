@@ -11,3 +11,23 @@
  {
     std::cout << "random_generator.cpp loaded" << std::endl;
  }
+
+ double Random()
+ {
+    return 0.5;
+ }
+
+ double Uniform(double L, double H)
+ {
+    return (L+H)/2;
+ }
+
+ double Exponential(double E)
+ {
+    return E;
+ }
+
+ double Normal(double M, double S)
+ {
+    return M;
+ }

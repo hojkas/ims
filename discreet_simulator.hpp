@@ -21,6 +21,10 @@ void sho_loaded_test(); //TODO remove, for initial linking tests
 
 //random_generator.cpp definitions
 void random_loaded_test(); //TODO remove, for initial linking tests
+double Random();
+double Uniform();
+double Exponential(double E);
+double Normal(double M, double S);
 
 //staticstics.cpp definitions
 void statistics_loaded_test(); //TODO remove, for initial linking tests
