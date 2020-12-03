@@ -16,18 +16,15 @@ class Simulator;
 class Event;
 
 //simulator.cpp definitions
-
-//double time, Event event
-#define t_event_queue std::list<Event*>
-void simulator_loaded_test(); //TODO remove, for initial linking tests
+Simulator* init_simulator(double startTime,double endTime);
+Simulator* init_simulator(double endTime);
 
 class Simulator
 {
     private:
-        t_event_queue event_queue;
+        std::list<Event*> event_queue;
 
     public:
-        Simulator(double endTime);
         Simulator(double startTime, double endTime);
         ~Simulator();
 
@@ -39,13 +36,17 @@ class Simulator
         double end_time;
 };
 
-//events.cpp definitions
+//events.cpp definitionsS
 void events_loaded_test(); //TODO remove, for initial linking tests
 class Event
 {
     public:
         Event(Simulator*);
         ~Event();
+
+        //operations
+        bool operator<(Event&);
+        bool operator>(Event&);
         
         std::string msg;
         Simulator* simulator;

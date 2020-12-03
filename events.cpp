@@ -20,3 +20,14 @@ Event::~Event()
 {
 
 }
+
+//operators override
+bool Event::operator<(Event& e)
+{
+    return (time < e.time);
+}
+
+bool Event::operator>(Event& e)
+{
+    return (time > e.time);
+}

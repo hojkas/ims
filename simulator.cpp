@@ -7,15 +7,16 @@
 
 #include "discrete_simulator.hpp"
 
-void simulator_loaded_test()
+Simulator* init_simulator(double startTime, double endTime)
 {
-    std::cout << "simulator.cpp loaded" << std::endl;
+    Simulator* new_s = new Simulator(startTime, endTime);
+    return new_s;
 }
 
-Simulator::Simulator(double endTime)
+Simulator* init_simulator(double endTime)
 {
-    end_time = endTime;
-    current_time = 0.0;
+    Simulator* new_s = new Simulator(0.0, endTime);
+    return new_s;
 }
 
 Simulator::Simulator(double startTime, double endTime)
@@ -31,10 +32,21 @@ Simulator::~Simulator()
 
 void Simulator::insert_event(Event* e)
 {
-
+    std::list<Event*>::iterator it;
+    for (it = event_queue.begin(); it != event_queue.end(); ++it)
+    {
+        if((*it)->time > e->time) {
+            event_queue.insert(it, e);
+            return;
+        } 
+    }
+    event_queue.push_back(e);
 }
 
 Event* Simulator::pop_event()
 {
-    
+    if(event_queue.size() == 0) return NULL;
+    Event* front_event = event_queue.front();
+    event_queue.pop_front();
+    return front_event;
 }
