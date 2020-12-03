@@ -1,5 +1,13 @@
 # IMS
 
+## HOWTO: TEST
+
+> make test
+
+pokud máš test s mainem v `test.cpp`, jinak
+
+> make test testfile=new_test.cpp
+
 ## Téma č. 4: Implementace diskrétního simulátoru s podporou SHO
 
 Implementujte vlastní diskrétní simulátor založený na procesech nebo událostech. Implementujte podporu pro SHO (fronty, linky) a generování pseudonáhodných čísel (pro různá rozložení). Demonstrujte na hypotetickém modelu SHO s několika linkami, různými procesy příchodů apod.
