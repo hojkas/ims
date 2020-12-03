@@ -5,7 +5,7 @@
 * event queue etc.
 */
 
-#include "discreet_simulator.hpp"
+#include "discrete_simulator.hpp"
 
 void simulator_loaded_test()
 {

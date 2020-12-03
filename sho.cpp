@@ -4,7 +4,7 @@
  * should cover Queues, Storages, Facitilies
 */
 
-#include "discreet_simulator.hpp"
+#include "discrete_simulator.hpp"
 
 void sho_loaded_test()
 {
