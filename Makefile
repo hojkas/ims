@@ -13,6 +13,7 @@ run:
 test:
 	@g++ $(testfile) $(simulator_files) -o $(testoutput)
 	@./$(testoutput)
+	@rm $(testoutput)
 
 clean:
 	rm $(output) $(testoutput)
