@@ -11,10 +11,14 @@
 #include <list>
 #include <tuple>
 
+//general definitions that need to be used before referencing
+class Simulator;
+class Event;
+
 //simulator.cpp definitions
 
 //double time, Event event
-#define t_event_queue std::list<std::tuple<double, Event>>
+#define t_event_queue std::list<Event*>
 void simulator_loaded_test(); //TODO remove, for initial linking tests
 
 class Simulator
@@ -23,12 +27,16 @@ class Simulator
         t_event_queue event_queue;
 
     public:
-        Simulator(int time);
+        Simulator(double endTime);
+        Simulator(double startTime, double endTime);
         ~Simulator();
 
-        Event pop_event();
-        void insert_event(Event);
+        Event* pop_event();
+        void insert_event(Event*);
 
+        //properties
+        double current_time;
+        double end_time;
 };
 
 //events.cpp definitions
@@ -36,10 +44,12 @@ void events_loaded_test(); //TODO remove, for initial linking tests
 class Event
 {
     public:
-        Event();
+        Event(Simulator*);
         ~Event();
         
         std::string msg;
+        Simulator* simulator;
+        double time;
 };
 
 //sho.cpp definitions

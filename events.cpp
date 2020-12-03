@@ -10,3 +10,13 @@ void events_loaded_test()
 {
     std::cout << "events.cpp loaded" << std::endl;
 }
+
+Event::Event(Simulator* sim)
+{
+    simulator = sim;
+}
+
+Event::~Event()
+{
+
+}
