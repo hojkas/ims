@@ -1,6 +1,6 @@
 testfile=test.cpp
 testoutput=test
-simulator_files= discreet_simulator.hpp simulator.cpp events.cpp statistics.cpp sho.cpp random_generator.cpp
+simulator_files= discrete_simulator.hpp simulator.cpp events.cpp statistics.cpp sho.cpp random_generator.cpp
 simulation_files=
 output=simulation
 

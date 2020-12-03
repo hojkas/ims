@@ -5,7 +5,7 @@
  * (as in ims slides page 167)
  */
 
- #include "discreet_simulator.hpp"
+ #include "discrete_simulator.hpp"
 
  void random_loaded_test() 
  {

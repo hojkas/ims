@@ -4,7 +4,7 @@
 * Event - main component of simulator
 */
 
-#include "discreet_simulator.hpp"
+#include "discrete_simulator.hpp"
 
 void events_loaded_test()
 {
