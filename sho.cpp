@@ -11,12 +11,36 @@
 // =========================================================================
 Queue::Queue()
 {
-    
+    limited = false;
+}
+
+Queue::Queue(size_t queue_limit)
+{
+    limit = queue_limit;
+    limited = true;
 }
 
 Queue::~Queue()
 {
+    for(const auto & event : queued_events) {
+        delete event;
+    }
+    queued_events.clear();
+}
 
+bool Queue::push_back(Event *e)
+{
+    if(limited && queued_events.size() >= limit) return false;
+    queued_events.push_back(e);
+    return true;
+}
+
+Event* Queue::pop_front()
+{
+    if(queued_events.size() == 0) return NULL;
+    Event *poped = queued_events.front();
+    queued_events.pop_front();
+    return poped;
 }
 
 // =========================================================================
@@ -25,11 +49,12 @@ Queue::~Queue()
 Facility::Facility(std::string facility_name)
 {
     name = facility_name;
+    queue = new Queue();
 }
 
 Facility::~Facility()
 {
-
+    delete queue;
 }
 
 // =========================================================================
@@ -39,15 +64,16 @@ Facility::~Facility()
  * @param storage_name Name of storage for future referring. Must be unique.
  * @param storage_capacity Size of storage. Must be bigger than 0.
 **/
-Storage::Storage(std::string storage_name, uint32_t storage_capacity)
+Storage::Storage(std::string storage_name, size_t storage_capacity)
 {
     name = storage_name;
     capacity = storage_capacity;
+    queue = new Queue();
 }
 
 Storage::~Storage()
 {
-
+    delete queue;
 }
 
 

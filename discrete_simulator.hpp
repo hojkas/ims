@@ -86,8 +86,17 @@ class EventGenerator : public Event
 //private, only for Facility and Storage use
 class Queue
 {
-    Queue();
-    ~Queue();
+    public:
+        Queue();
+        Queue(size_t);
+        ~Queue();
+
+        Event* pop_front();
+        bool push_back(Event*);
+
+        bool limited;
+        size_t limit;
+        std::list<Event*> queued_events;
 };
 
 class Facility
@@ -97,16 +106,18 @@ class Facility
         ~Facility();
 
         std::string name;
+        Queue* queue;
 };
 
 class Storage
 {
     public:
-        Storage(std::string, uint32_t);
+        Storage(std::string, size_t);
         ~Storage();
 
         std::string name;
-        uint32_t capacity;
+        size_t capacity;
+        Queue* queue;
 };
 
 // =========================================================================
