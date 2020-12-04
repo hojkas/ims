@@ -103,6 +103,7 @@ class Facility
 {
     public:
         Facility(std::string);
+        Facility(std::string, size_t);
         ~Facility();
 
         std::string name;
@@ -113,6 +114,7 @@ class Storage
 {
     public:
         Storage(std::string, size_t);
+        Storage(std::string, size_t, size_t);
         ~Storage();
 
         std::string name;

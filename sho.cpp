@@ -52,6 +52,12 @@ Facility::Facility(std::string facility_name)
     queue = new Queue();
 }
 
+Facility::Facility(std::string facility_name, size_t queue_limit)
+{
+    name = facility_name;
+    queue = new Queue(queue_limit);
+}
+
 Facility::~Facility()
 {
     delete queue;
@@ -66,9 +72,20 @@ Facility::~Facility()
 **/
 Storage::Storage(std::string storage_name, size_t storage_capacity)
 {
+    if(Simulator::storages.find(name) == Simulator::storages.end()) {
+        std::cerr << "Storage with name " << name << " was defined twice. Please make sure each storage has unique name." << std::endl;
+        exit(1);
+    }
     name = storage_name;
     capacity = storage_capacity;
     queue = new Queue();
+}
+
+Storage::Storage(std::string storage_name, size_t storage_capacity, size_t queue_limit)
+{
+    name = storage_name;
+    capacity = storage_capacity;
+    queue = new Queue(queue_limit);
 }
 
 Storage::~Storage()
