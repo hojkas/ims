@@ -46,7 +46,7 @@ Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zv
 
 [X] Zapracovat do simulátoru podporu sho, aka věci jako že po eventu co sahá na facility se checkne queue té facility atd
 
-[X] Queue
+[&#10003;] Queue
 
 [X] Storage, Facility
 
