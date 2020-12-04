@@ -37,7 +37,7 @@ Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zv
 
 [X] eventy
 
-[X] basic funkce simulátoru, aka práce s časem a next event handling
+[&#2713;] basic funkce simulátoru, aka práce s časem a next event handling
 
 [X] random number generator (viz přednášky slide 167, tyto implementovat)
 
