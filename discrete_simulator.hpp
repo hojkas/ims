@@ -8,6 +8,7 @@
 
 // general dependencies
 #include <iostream>
+#include <string>
 #include <list>
 
 //general definitions that need to be used before referencing
@@ -34,6 +35,7 @@ class Simulator
         //properties
         static double start_time;
         static double end_time;
+        static uint32_t free_event_id;
 };
 
 //events.cpp definitionsS
@@ -48,8 +50,10 @@ class Event
         //operations
         bool operator<(Event&);
         bool operator>(Event&);
-        std::string name;
+        std::string event_name;
         double time;
+        int priority;
+        uint32_t event_id;
 };
 
 //sho.cpp definitions

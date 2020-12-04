@@ -11,12 +11,14 @@
 std::list<Event*> Simulator::event_queue;
 double Simulator::start_time;
 double Simulator::end_time;
+uint32_t Simulator::free_event_id;
 
 void Simulator::Init(double start_t, double end_t)
 {
     start_time = start_t;
     end_time = end_t;
     event_queue.clear();
+    free_event_id = 0;
 }
 
 void Simulator::deconstruct()
@@ -32,8 +34,14 @@ void Simulator::Run()
 {
     Event* curr_event = pop_event();
     while(curr_event != NULL) {
+        //if time is before simulation time
+        if(curr_event->time < start_time) {
+            curr_event = pop_event();
+            continue;
+        }
         //if time is exceeded
         if(curr_event->time > end_time) break;
+
         //work out current event and log to stats what's neccessary
         curr_event->Behaviour();
 
@@ -51,7 +59,7 @@ void Simulator::schedule_event(Event* e)
     std::list<Event*>::iterator it;
     for (it = event_queue.begin(); it != event_queue.end(); ++it)
     {
-        if((*it)->time > e->time) {
+        if(((*it)->time == e->time && e->priority > (*it)->priority) || (*it)->time > e->time) {
             event_queue.insert(it, e);
             return;
         } 

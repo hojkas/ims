@@ -8,6 +8,10 @@
 
 Event::Event()
 {
+    priority = 0;
+    event_id = Simulator::free_event_id;
+    Simulator::free_event_id += 1;
+    event_name = std::string();
 }
 
 Event::~Event()
