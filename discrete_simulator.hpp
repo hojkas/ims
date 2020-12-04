@@ -15,7 +15,9 @@
 class Simulator;
 class Event;
 
-//simulator.cpp definitions
+// =========================================================================
+//                          simulator.cpp definitions
+// =========================================================================
 Simulator* init_simulator(double startTime,double endTime);
 Simulator* init_simulator(double endTime);
 
@@ -38,7 +40,9 @@ class Simulator
         static uint32_t free_event_id;
 };
 
-//events.cpp definitionsS
+// =========================================================================
+//                          events.cpp definitions
+// =========================================================================
 class Event
 {
     public:
@@ -65,11 +69,35 @@ class EventGenerator : public Event
         EventGenerator();
 };
 
-//sho.cpp definitions
+// =========================================================================
+//                          sho.cpp definitions
+// =========================================================================
 //sho - systém hromadné obsluhy
-void sho_loaded_test(); //TODO remove, for initial linking tests
 
-//random_generator.cpp definitions
+//private, only for Facility and Storage use
+class Queue
+{
+    Queue();
+    ~Queue();
+};
+
+class Facility
+{
+    public:
+        Facility();
+        ~Facility();
+};
+
+class Storage
+{
+    public:
+        Storage();
+        ~Storage();
+};
+
+// =========================================================================
+//                     random_generator.cpp definitions
+// =========================================================================
 void random_loaded_test(); //TODO remove, for initial linking tests
 
 double Random();

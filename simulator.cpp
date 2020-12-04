@@ -44,7 +44,10 @@ void Simulator::Run()
             continue;
         }
         //if time is exceeded
-        if(curr_event->time > end_time) break;
+        if(curr_event->time > end_time) {
+            delete curr_event;
+            break;
+        }
 
         //work out current event and log to stats what's neccessary
         curr_event->Behaviour();
