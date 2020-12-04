@@ -29,7 +29,7 @@ class Simulator
 
         static void Run();
         static Event* pop_event();
-        static void insert_event(Event*);
+        static void schedule_event(Event*);
 
         //properties
         static double start_time;

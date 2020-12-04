@@ -44,7 +44,7 @@ void Simulator::Run()
 /* Inserts Event e in simulator's event_queue based on its time value
  * @param Event* Event to insert
  */
-void Simulator::insert_event(Event* e)
+void Simulator::schedule_event(Event* e)
 {
     std::list<Event*>::iterator it;
     for (it = event_queue.begin(); it != event_queue.end(); ++it)
