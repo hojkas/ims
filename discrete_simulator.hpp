@@ -46,6 +46,7 @@ class Event
         ~Event();
         
         virtual void Behaviour() = 0;
+        std::string get_name();
 
         //operations
         bool operator<(Event&);
@@ -54,6 +55,14 @@ class Event
         double time;
         int priority;
         uint32_t event_id;
+        
+        bool repeat_itself;
+};
+
+class EventGenerator : public Event
+{
+    public:
+        EventGenerator();
 };
 
 //sho.cpp definitions

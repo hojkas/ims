@@ -34,9 +34,11 @@ Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zv
 
 ### První vlna - Basic event based simulátor
 
-[X] eventy
+[&#10003;] eventy
 
 [&#10003;] basic funkce simulátoru, aka práce s časem a next event handling
+
+[&#10003;] generátor eventů
 
 [X] random number generator (viz přednášky slide 167, tyto implementovat)
 
@@ -89,6 +91,33 @@ int main()
 Class Person (nový event) dědí z Event. Může mít vlastní konstruktor (zde s parametrem double, který určí čas události). V `Behaviour()` je kód, který event vykoná v čase time.
 
 V `main` je pak potřeba inicializovat simulátor na počáteční a koncový čas, naplánovat event pomocí `schedule_event`, kterému se předá pointer na novou instanci class Person a spustí se simulace.
+
+### Jak vytvořit vlastní generátor
+
+```cpp
+class YourGenerator : public EventGenerator
+{
+    public:
+        void Behaviour() {
+            time += Random();
+            Simulator::schedule_event(new Person(time));
+            Simulator::schedule_event(this);
+        }
+};
+
+int main()
+{
+  Simulator::Init(0.0, 10.0);
+  Simulator::schedule_event(new PersonGenerator());
+  Simulator::Run();
+}
+```
+
+Nadeklarovat class Generátoru s Behaviour s:
+
+- změnou vnitřní proměnné generátoru time přidáním žádaného náhodného rozložení
+- naplánováním do simulátoru Event, který vygeneroval, na čas time
+- naplánovat sám sebe znovu do simulátoru na čas time
 
 ## Téma č. 4: Implementace diskrétního simulátoru s podporou SHO
 

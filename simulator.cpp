@@ -36,6 +36,10 @@ void Simulator::Run()
     while(curr_event != NULL) {
         //if time is before simulation time
         if(curr_event->time < start_time) {
+            std::cerr << "Event " << curr_event->get_name() << " starts before simulation start time, " <<
+                "possibly throwing off the whole siulation - all events before time are fully ignored, " <<
+                "including repeating generators. Please check the events and their start times." << std::endl;
+            delete curr_event;
             curr_event = pop_event();
             continue;
         }
@@ -45,9 +49,13 @@ void Simulator::Run()
         //work out current event and log to stats what's neccessary
         curr_event->Behaviour();
 
+        //if not marked as generator, delete curr_event
+        if(!curr_event->repeat_itself) delete curr_event;
         //gets new event
         curr_event = pop_event();
     }
+
+    deconstruct();
 }
 
 
