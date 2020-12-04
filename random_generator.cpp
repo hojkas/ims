@@ -5,29 +5,37 @@
  * (as in ims slides page 167)
  */
 
- #include "discreet_simulator.hpp"
+#include "discreet_simulator.hpp"
 
- void random_loaded_test() 
- {
+void random_loaded_test() 
+{
+    
     std::cout << "random_generator.cpp loaded" << std::endl;
- }
+}
 
- double Random()
- {
-    return 0.5;
- }
+void RandomGenerator::RandomNumberGenerator(void)
+{
+    this->randomNumber = this->randomNumber * 69069u * 1u;
+    this->randomNumber = this->randomNumber / ((double) UINT32_MAX + 1.0);
+}
 
- double Uniform(double L, double H)
- {
+double RandomGenerator::Random()
+{
+    this->RandomNumberGenerator();
+    return this->randomNumber;
+}
+
+double RandomGenerator::Uniform(double L, double H)
+{
     return (L+H)/2;
- }
+}
 
- double Exponential(double E)
- {
+double RandomGenerator::Exponential(double E)
+{
     return E;
- }
+}
 
- double Normal(double M, double S)
- {
+double RandomGenerator::Normal(double M, double S)
+{
     return M;
- }
+}

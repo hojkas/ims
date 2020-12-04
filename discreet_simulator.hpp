@@ -8,6 +8,7 @@
 
 // general dependencies
 #include <iostream>
+#include <cstdint>
 
 //simulator.cpp definitions
 void simulator_loaded_test(); //TODO remove, for initial linking tests
@@ -21,10 +22,34 @@ void sho_loaded_test(); //TODO remove, for initial linking tests
 
 //random_generator.cpp definitions
 void random_loaded_test(); //TODO remove, for initial linking tests
-double Random();
-double Uniform();
-double Exponential(double E);
-double Normal(double M, double S);
+class RandomGenerator
+{
+private:
+    static uint32_t randomNumber;
+
+    // Generates a new random number into randomNumber
+    void RandomNumberGenerator();
+
+public:
+    RandomGenerator();
+    ~RandomGenerator();
+
+    double Random();
+    double Uniform(double MIN, double MAX);
+    double Exponential(double E);
+    double Normal(double MEAN, double SIGMA);
+};
+
+RandomGenerator::RandomGenerator()
+{
+    // Base Seed
+    this->randomNumber = 0x626f6f70;
+
+}
+
+RandomGenerator::~RandomGenerator()
+{
+}
 
 //staticstics.cpp definitions
 void statistics_loaded_test(); //TODO remove, for initial linking tests
