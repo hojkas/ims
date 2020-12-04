@@ -46,12 +46,19 @@ Event* Queue::pop_front()
 // =========================================================================
 //                              FACILITY
 // =========================================================================
+/* Constructor for Facility.
+ * @param facility_name Name of facility, must be unique for any facility.
+ */
 Facility::Facility(std::string facility_name)
 {
     name = facility_name;
     queue = new Queue();
 }
 
+/* Constructor for Facility.
+ * @param facility_name Name of facility, must be unique for any facility.
+ * @param queue_limit Limits size of queue. If it is full, Seize facility will return false
+ */
 Facility::Facility(std::string facility_name, size_t queue_limit)
 {
     name = facility_name;
@@ -72,15 +79,16 @@ Facility::~Facility()
 **/
 Storage::Storage(std::string storage_name, size_t storage_capacity)
 {
-    if(Simulator::storages.find(name) == Simulator::storages.end()) {
-        std::cerr << "Storage with name " << name << " was defined twice. Please make sure each storage has unique name." << std::endl;
-        exit(1);
-    }
     name = storage_name;
     capacity = storage_capacity;
     queue = new Queue();
 }
 
+/* Constructor for Storage
+ * @param storage_name Name of storage for future referring. Must be unique.
+ * @param storage_capacity Size of storage. Must be bigger than 0.
+ * @param queue_limit Limits the size of queue of waiting events. If limit is reached, Seize will return false.
+**/
 Storage::Storage(std::string storage_name, size_t storage_capacity, size_t queue_limit)
 {
     name = storage_name;

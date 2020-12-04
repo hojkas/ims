@@ -15,5 +15,8 @@ test:
 	@./$(testoutput)
 	@rm $(testoutput)
 
+lazy:
+	g++ *pp -o $(testoutput)
+
 clean:
 	rm $(output) $(testoutput)

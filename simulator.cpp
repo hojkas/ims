@@ -124,3 +124,27 @@ Event* Simulator::pop_event()
     event_queue.pop_front();
     return front_event;
 }
+
+//======================================================================
+//                      SHO MANIPULATION
+//======================================================================
+
+void Simulator::CreateStorage(std::string storage_name, size_t storage_capacity, size_t storage_queue_limit)
+{
+    if(storages.find(storage_name) != storages.end()) {
+        std::cerr << "Storage with name " << storage_name << " was defined twice. Please make sure each storage has unique name."
+            << std::endl;
+        exit(1);
+    }
+
+    Storage* new_storage;
+    if(storage_queue_limit == 0) new_storage = new Storage(storage_name, storage_capacity);
+    else new_storage = new Storage(storage_name, storage_capacity, storage_queue_limit);
+
+    
+}   
+
+void Simulator::CreateStorage(std::string storage_name, size_t storage_capacity)
+{
+    CreateStorage(storage_name, storage_capacity, 0);
+}

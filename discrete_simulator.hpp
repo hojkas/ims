@@ -38,6 +38,10 @@ class Simulator
         static void schedule_event(Event *);
         static void fastforward_event(Event *);
 
+        //sho
+        static void CreateStorage(std::string, size_t);
+        static void CreateStorage(std::string, size_t, size_t);
+
         //properties
         static double start_time;
         static double end_time;
