@@ -11,6 +11,7 @@
 std::list<Event*> Simulator::event_queue;
 double Simulator::start_time;
 double Simulator::end_time;
+double Simulator::last_effective_time;
 uint32_t Simulator::free_event_id;
 std::map<std::string, Facility*> Simulator::facilities;
 std::map<std::string, Storage*> Simulator::storages;
@@ -18,6 +19,7 @@ std::map<std::string, Storage*> Simulator::storages;
 void Simulator::Init(double start_t, double end_t)
 {
     start_time = start_t;
+    last_effective_time = start_time;
     end_time = end_t;
     event_queue.clear();
     free_event_id = 0;
@@ -63,10 +65,12 @@ void Simulator::Run()
         }
         //if time is exceeded
         if(curr_event->time > end_time) {
+            last_effective_time = end_time;
             delete curr_event;
             break;
         }
 
+        last_effective_time = curr_event->time;
         //work out current event and log to stats what's neccessary
         curr_event->Behaviour();
 
@@ -83,7 +87,7 @@ void Simulator::Run()
 /* Inserts Event e in simulator's event_queue based on its time value
  * @param Event* Event to insert
  */
-void Simulator::schedule_event(Event* e)
+void Simulator::ScheduleEvent(Event* e)
 {
     std::list<Event*>::iterator it;
     for (it = event_queue.begin(); it != event_queue.end(); ++it)
@@ -99,19 +103,13 @@ void Simulator::schedule_event(Event* e)
 
 /* Inserts event to be done immediatelly after current one. Shouldn't be called from outside,
  * is usefull for removing items from queue after Facility or Storage clears up.
- * Skips all time requirements but still honors priority.
+ * Skips all time requirements but still honors priority. Time is set to current simulation time.
+ * @param e Event to put at beginning of events scheduled.
 */
 void Simulator::fastforward_event(Event* e)
 {
-    //in case of empty event_queue, time is left as it was as it shouldn't matter unless it's generator
-    if(event_queue.empty()) {
-        event_queue.push_back(e);
-        return;
-    }
-
-    //gets time of first value in queue and schedules it
-    e->time = event_queue.front()->time;
-    schedule_event(e);
+    e->time = last_effective_time;
+    ScheduleEvent(e);
 }
 
 /* Removes first Event* from simulator's event_queue and returns it
@@ -129,6 +127,11 @@ Event* Simulator::pop_event()
 //                      SHO MANIPULATION
 //======================================================================
 
+/* Creates Storage and appends to Simulator list of storages.
+ * @param storage_name Name of storage for future referring. Must be unique.
+ * @param storage_capacity Size of storage. Must be bigger than 0.
+ * @param queue_limit Limits the size of queue of waiting events. If limit is reached, Seize will return false.
+**/
 void Simulator::CreateStorage(std::string storage_name, size_t storage_capacity, size_t storage_queue_limit)
 {
     if(storages.find(storage_name) != storages.end()) {
@@ -138,18 +141,34 @@ void Simulator::CreateStorage(std::string storage_name, size_t storage_capacity,
         exit(1);
     }
 
-    Storage* new_storage;
-    if(storage_queue_limit == 0) new_storage = new Storage(storage_name, storage_capacity);
-    else new_storage = new Storage(storage_name, storage_capacity, storage_queue_limit);
+    Storage* new_storage = new Storage(storage_name, storage_capacity, storage_queue_limit);
 
     storages.insert(std::pair<std::string, Storage*>(storage_name, new_storage));
 }   
 
+/* Creates Storage and appends to Simulator list of storages.
+ * @param storage_name Name of storage for future referring. Must be unique.
+ * @param storage_capacity Size of storage. Must be bigger than 0.
+**/
 void Simulator::CreateStorage(std::string storage_name, size_t storage_capacity)
 {
-    CreateStorage(storage_name, storage_capacity, 0);
+    if(storages.find(storage_name) != storages.end()) {
+        std::cerr << "Storage with name " << storage_name << " was defined twice. Please make sure each storage has unique name."
+            << std::endl;
+        deconstruct();
+        exit(1);
+    }
+
+    Storage* new_storage = new Storage(storage_name, storage_capacity);
+
+    storages.insert(std::pair<std::string, Storage*>(storage_name, new_storage));
 }
 
+/* Creates Facility and ads it to Simulator list of Facilities.
+ * @param facility_name Name of facility, must be unique among facilites.
+ * @param facility_queue_limit Limits events waiting for facility to be free. When limit is reached,
+ *  Seize facility will return false and can be handled in Behaviour of event.
+ */
 void Simulator::CreateFacility(std::string facility_name, size_t facility_queue_limit)
 {
     if(facilities.find(facility_name) != facilities.end()) {
@@ -166,7 +185,56 @@ void Simulator::CreateFacility(std::string facility_name, size_t facility_queue_
     facilities.insert(std::pair<std::string, Facility*>(facility_name, new_facility));
 }   
 
+/* Creates Facility and ads it to Simulator list of Facilities.
+ * @param facility_name Name of facility, must be unique among facilites.
+ */
 void Simulator::CreateFacility(std::string facility_name)
 {
     CreateFacility(facility_name, 0);
+}
+
+/* Tries to Seize Storage of given name. If the storage is free, immediately does Event *event.
+ * If storage doesn't have any free space, event is stored in storage queue according to its priority, until there is
+ * free space. If the queue is full (the Storage was created with limited queue), Event* event is NOT handled at all and
+ * function returns false.
+ * @param storage_name Name of storage to seize.
+ * @param event Event that will be run (its Behaviour will be simulated), when it gets one unit from Storage.
+ * @return True if event either got unit from storage or was put inside its queue, false if queue was full and event remains
+ * unhandled.
+ */
+bool Simulator::SeizeStorage(std::string storage_name, Event* event)
+{
+
+}
+
+/* Tries to Seize Facility of given name. If the Facility is free, immediately does Event *event.
+ * If facility isn't free, event is stored in facility queue according to its priority, until there is
+ * free space. If the queue is full (the Facility was created with limited queue), Event* event is NOT handled at all and
+ * function returns false.
+ * @param facility_name Name of facility to seize.
+ * @param event Event that will be run (its Behaviour will be simulated), when it gets access Facility.
+ * @return True if event either got access to facility or was put inside its queue, false if queue was full and event remains
+ * unhandled.
+ */
+bool Simulator::SeizeFacility(std::string facility_name, Event* event)
+{
+
+}
+
+/* Releases storage unit. Should only ever be used once by Event that was created by Event seizing Storage.
+ * If there are any events in storage queue, the first one is scheduled at the first place in event calendar.
+ * @param storage_name Name of storage that is to be released.
+ */
+void Simulator::ReleaseStorage(std::string storage_name)
+{
+
+}
+
+/* Releases facility. Should only ever be used once by Event that was created by Event seizing Facility.
+ * If there are any events in facility queue, the first one is scheduled at the first place in event calendar.
+ * @param storage_name Name of facility that is to be released.
+ */
+void Simulator::ReleaseFacility(std::string facility_name)
+{
+
 }

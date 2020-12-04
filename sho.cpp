@@ -35,6 +35,21 @@ bool Queue::push_back(Event *e)
     return true;
 }
 
+bool Queue::insert_event(Event *e)
+{
+    if(limited && queued_events.size() >= limit) return false;
+    std::list<Event*>::iterator it;
+    for (it = queued_events.begin(); it != queued_events.end(); ++it)
+    {
+        if(e->priority > (*it)->priority) {
+            queued_events.insert(it, e);
+            return true;
+        } 
+    }
+    queued_events.push_back(e);
+    return true;
+}
+
 Event* Queue::pop_front()
 {
     if(queued_events.size() == 0) return NULL;
@@ -53,6 +68,7 @@ Facility::Facility(std::string facility_name)
 {
     name = facility_name;
     queue = new Queue();
+    capacity = 1;
 }
 
 /* Constructor for Facility.
@@ -63,6 +79,7 @@ Facility::Facility(std::string facility_name, size_t queue_limit)
 {
     name = facility_name;
     queue = new Queue(queue_limit);
+    capacity = 1;
 }
 
 Facility::~Facility()

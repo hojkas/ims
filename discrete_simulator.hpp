@@ -35,18 +35,25 @@ class Simulator
 
         static void Run();
         static Event* pop_event();
-        static void schedule_event(Event *);
+        static void ScheduleEvent(Event *);
         static void fastforward_event(Event *);
 
         //sho
+
         static void CreateStorage(std::string, size_t);
         static void CreateStorage(std::string, size_t, size_t);
         static void CreateFacility(std::string);
         static void CreateFacility(std::string, size_t);
 
+        static bool SeizeStorage(std::string, Event *);
+        static bool SeizeFacility(std::string, Event *);
+        static void ReleaseStorage(std::string);
+        static void ReleaseFacility(std::string);
+
         //properties
         static double start_time;
         static double end_time;
+        static double last_effective_time;
         static uint32_t free_event_id;
 
         //maps of Facilities and storages
@@ -71,7 +78,7 @@ class Event
         bool operator<(Event&);
         bool operator>(Event&);
         std::string event_name;
-        double time;
+        double time; 
         int priority;
         uint32_t event_id;
         
@@ -99,6 +106,7 @@ class Queue
 
         Event* pop_front();
         bool push_back(Event*);
+        bool insert_event(Event *);
 
         bool limited;
         size_t limit;
@@ -111,8 +119,11 @@ class Facility
         Facility(std::string);
         Facility(std::string, size_t);
         ~Facility();
+        bool Seize(Event* );
+        void Release();
 
         std::string name;
+        size_t capacity;
         Queue* queue;
 };
 
@@ -122,6 +133,8 @@ class Storage
         Storage(std::string, size_t);
         Storage(std::string, size_t, size_t);
         ~Storage();
+        bool Seize(Event *);
+        void Release();
 
         std::string name;
         size_t capacity;
