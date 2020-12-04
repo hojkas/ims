@@ -10,10 +10,13 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <map>
 
 //general definitions that need to be used before referencing
 class Simulator;
 class Event;
+class Storage;
+class Facility;
 
 // =========================================================================
 //                          simulator.cpp definitions
@@ -32,12 +35,18 @@ class Simulator
 
         static void Run();
         static Event* pop_event();
-        static void schedule_event(Event*);
+        static void schedule_event(Event *);
+        static void fastforward_event(Event *);
 
         //properties
         static double start_time;
         static double end_time;
         static uint32_t free_event_id;
+
+        //maps of Facilities and storages
+        static std::map<std::string, Facility*> facilities;
+        static std::map<std::string, Storage*> storages;
+
 };
 
 // =========================================================================
@@ -84,15 +93,20 @@ class Queue
 class Facility
 {
     public:
-        Facility();
+        Facility(std::string);
         ~Facility();
+
+        std::string name;
 };
 
 class Storage
 {
     public:
-        Storage();
+        Storage(std::string, uint32_t);
         ~Storage();
+
+        std::string name;
+        uint32_t capacity;
 };
 
 // =========================================================================

@@ -12,6 +12,8 @@ std::list<Event*> Simulator::event_queue;
 double Simulator::start_time;
 double Simulator::end_time;
 uint32_t Simulator::free_event_id;
+std::map<std::string, Facility*> Simulator::facilities;
+std::map<std::string, Storage*> Simulator::storages;
 
 void Simulator::Init(double start_t, double end_t)
 {
@@ -19,6 +21,8 @@ void Simulator::Init(double start_t, double end_t)
     end_time = end_t;
     event_queue.clear();
     free_event_id = 0;
+    facilities.clear();
+    storages.clear();
 }
 
 void Simulator::deconstruct()
@@ -28,8 +32,22 @@ void Simulator::deconstruct()
         delete curr_event;
         curr_event = pop_event();
     }
+
+    for(const auto& kv : facilities) {
+        delete kv.second;
+    }
+    facilities.clear();
+
+    for(const auto& kv : storages) {
+        delete kv.second;
+    }
+    storages.clear();
 }
 
+/* Runs the simulaton from data previously set up in Simulator. Will simulate events from start time to end time.
+ * Beware, if there are any events before start time, they will be ignored in full - including generators which will render
+ * then efectless.
+*/
 void Simulator::Run()
 {
     Event* curr_event = pop_event();
@@ -76,6 +94,24 @@ void Simulator::schedule_event(Event* e)
         } 
     }
     event_queue.push_back(e);
+}
+
+
+/* Inserts event to be done immediatelly after current one. Shouldn't be called from outside,
+ * is usefull for removing items from queue after Facility or Storage clears up.
+ * Skips all time requirements but still honors priority.
+*/
+void Simulator::fastforward_event(Event* e)
+{
+    //in case of empty event_queue, time is left as it was as it shouldn't matter unless it's generator
+    if(event_queue.empty()) {
+        event_queue.push_back(e);
+        return;
+    }
+
+    //gets time of first value in queue and schedules it
+    e->time = event_queue.front()->time;
+    schedule_event(e);
 }
 
 /* Removes first Event* from simulator's event_queue and returns it
