@@ -127,19 +127,18 @@ void random_loaded_test(); //TODO remove, for initial linking tests
 class RandomGenerator
 {
 private:
-    uint32_t randomNumber;
-
     // Generates a new random number into randomNumber
-    void RandomNumberGenerator();
+    static void RandomNumberGenerator();
 
 public:
-    RandomGenerator();
-    ~RandomGenerator();
+    static void Init();
+    static void deconstruct();
+    static uint32_t randomNumber;
 
-    double Random();
-    double Uniform(double MIN, double MAX);
-    double Exponential(double E);
-    double Normal(double MEAN, double SIGMA);
+    static double Random();
+    static double Uniform(double MIN, double MAX);
+    static double Exponential(double E);
+    static double Normal(double MEAN, double SIGMA);
 };
 
 //staticstics.cpp definitions

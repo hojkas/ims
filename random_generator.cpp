@@ -7,14 +7,16 @@
 
  #include "discrete_simulator.hpp"
 
-RandomGenerator::RandomGenerator()
+uint32_t RandomGenerator::randomNumber;
+
+void RandomGenerator::Init()
 {
     // Base Seed
-    this->randomNumber = 0x626f6f70;
-    this->RandomNumberGenerator();
+    randomNumber = uint32_t(0x626f6f70);
+    RandomNumberGenerator();
 }
 
-RandomGenerator::~RandomGenerator()
+void RandomGenerator::deconstruct()
 {
 }
 
@@ -26,14 +28,14 @@ void random_loaded_test()
 
 void RandomGenerator::RandomNumberGenerator(void)
 {
-    this->randomNumber = this->randomNumber * 69069u * 1u;
-    this->randomNumber = this->randomNumber / ((double) UINT32_MAX + 1.0);
+    randomNumber = randomNumber * 69069u * 1u;
+    randomNumber = randomNumber / ((double) UINT32_MAX + 1.0);
 }
 
 double RandomGenerator::Random()
 {
-    this->RandomNumberGenerator();
-    return this->randomNumber;
+    RandomNumberGenerator();
+    return randomNumber;
 }
 
 double RandomGenerator::Uniform(double L, double H)
