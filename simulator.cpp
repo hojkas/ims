@@ -32,8 +32,10 @@ void Simulator::Run()
 {
     Event* curr_event = pop_event();
     while(curr_event != NULL) {
+        //if time is exceeded
+        if(curr_event->time > end_time) break;
         //work out current event and log to stats what's neccessary
-        curr_event->Behavior();
+        curr_event->Behaviour();
 
         //gets new event
         curr_event = pop_event();

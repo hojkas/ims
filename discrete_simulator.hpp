@@ -43,7 +43,7 @@ class Event
         Event();
         ~Event();
         
-        virtual void Behavior() = 0;
+        virtual void Behaviour() = 0;
 
         //operations
         bool operator<(Event&);

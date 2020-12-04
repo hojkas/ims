@@ -30,7 +30,6 @@ To by ti nemělo vyhodit žádný error a mělo by to vypsat, že ty komponenty 
 
 Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zvnějšku.
 
-
 ## TODOs
 
 ### První vlna - Basic event based simulátor
@@ -62,6 +61,34 @@ Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zv
 [X] U random number generator udělat výstupy z mnohonásobného generování různých rozložení a udělat grafy, aby se ukázalo, že fakt fungují
 
 [X] Dokumentace k simulaci
+
+## HOWTO: USE SIMULATOR
+
+### Jak vytvořit vlastní event
+
+```cpp
+class Person : public Event
+{
+    public:
+        Person(double t) {
+            time = t;
+        }
+        void Behaviour() {
+            std::cout << "Person at time " << time << "." << std::endl;
+        }
+};
+
+int main()
+{
+  Simulator::Init(0.0, 10.0);
+  Simulator::schedule_event(new Person(7.0));
+  Simulator::Run();
+}
+```
+
+Class Person (nový event) dědí z Event. Může mít vlastní konstruktor (zde s parametrem double, který určí čas události). V `Behaviour()` je kód, který event vykoná v čase time.
+
+V `main` je pak potřeba inicializovat simulátor na počáteční a koncový čas, naplánovat event pomocí `schedule_event`, kterému se předá pointer na novou instanci class Person a spustí se simulace.
 
 ## Téma č. 4: Implementace diskrétního simulátoru s podporou SHO
 
