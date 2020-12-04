@@ -6,7 +6,7 @@
 * some output or not
 */
 
-#include "discreet_simulator.hpp"
+#include "discrete_simulator.hpp"
 
 void statistics_loaded_test()
 {

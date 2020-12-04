@@ -5,7 +5,18 @@
  * (as in ims slides page 167)
  */
 
-#include "discreet_simulator.hpp"
+ #include "discrete_simulator.hpp"
+
+RandomGenerator::RandomGenerator()
+{
+    // Base Seed
+    this->randomNumber = 0x626f6f70;
+    this->RandomNumberGenerator();
+}
+
+RandomGenerator::~RandomGenerator()
+{
+}
 
 void random_loaded_test() 
 {
