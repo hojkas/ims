@@ -41,6 +41,8 @@ class Simulator
         //sho
         static void CreateStorage(std::string, size_t);
         static void CreateStorage(std::string, size_t, size_t);
+        static void CreateFacility(std::string);
+        static void CreateFacility(std::string, size_t);
 
         //properties
         static double start_time;

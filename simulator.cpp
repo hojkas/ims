@@ -134,6 +134,7 @@ void Simulator::CreateStorage(std::string storage_name, size_t storage_capacity,
     if(storages.find(storage_name) != storages.end()) {
         std::cerr << "Storage with name " << storage_name << " was defined twice. Please make sure each storage has unique name."
             << std::endl;
+        deconstruct();
         exit(1);
     }
 
@@ -141,10 +142,31 @@ void Simulator::CreateStorage(std::string storage_name, size_t storage_capacity,
     if(storage_queue_limit == 0) new_storage = new Storage(storage_name, storage_capacity);
     else new_storage = new Storage(storage_name, storage_capacity, storage_queue_limit);
 
-    
+    storages.insert(std::pair<std::string, Storage*>(storage_name, new_storage));
 }   
 
 void Simulator::CreateStorage(std::string storage_name, size_t storage_capacity)
 {
     CreateStorage(storage_name, storage_capacity, 0);
+}
+
+void Simulator::CreateFacility(std::string facility_name, size_t facility_queue_limit)
+{
+    if(facilities.find(facility_name) != facilities.end()) {
+        std::cerr << "Facility with name " << facility_name << " was defined twice. Please make sure each facility has unique name."
+            << std::endl;
+        deconstruct();
+        exit(1);
+    }
+
+    Facility* new_facility;
+    if(facility_queue_limit == 0) new_facility = new Facility(facility_name);
+    else new_facility = new Facility(facility_name);
+
+    facilities.insert(std::pair<std::string, Facility*>(facility_name, new_facility));
+}   
+
+void Simulator::CreateFacility(std::string facility_name)
+{
+    CreateFacility(facility_name, 0);
 }
