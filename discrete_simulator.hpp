@@ -11,6 +11,9 @@
 #include <string>
 #include <list>
 #include <map>
+#include <cmath>
+#include <limits>
+#include <utility>
 
 //general definitions that need to be used before referencing
 class Simulator;
@@ -149,11 +152,24 @@ class Storage
 //                     random_generator.cpp definitions
 // =========================================================================
 void random_loaded_test(); //TODO remove, for initial linking tests
+class RandomGenerator
+{
+private:
+    static double second_BM_variable;
+    static constexpr double fraction { 1.0 / ((double)UINT32_MAX + 1.0) };
+    // Generates a new random number into randomNumber
+    static void RandomNumberGenerator();
 
-double Random();
-double Uniform();
-double Exponential(double E);
-double Normal(double M, double S);
+public:
+    static void Init();
+    static void deconstruct();
+    static uint32_t randomNumber;
+
+    static double Random();
+    static double Uniform(double MIN, double MAX);
+    static double Exponential(double E);
+    static double Normal(double MEAN, double SIGMA);
+};
 
 // =========================================================================
 //                         staticstics.cpp definitions
