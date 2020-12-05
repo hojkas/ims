@@ -157,7 +157,14 @@ double Uniform();
 double Exponential(double E);
 double Normal(double M, double S);
 
-//staticstics.cpp definitions
-void statistics_loaded_test(); //TODO remove, for initial linking tests
+// =========================================================================
+//                         staticstics.cpp definitions
+// =========================================================================
+class Log {
+public:
+    static void SimulatorState();
+    static void EventState(Event *, std::string);
+};
+
 
 #endif //_DISCREET_SIMULATOR_H

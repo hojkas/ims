@@ -8,7 +8,12 @@
 
 #include "discrete_simulator.hpp"
 
-void statistics_loaded_test()
+void Log::SimulatorState()
 {
-    std::cout << "statistics.cpp loaded" << std::endl;
+
+}
+
+void Log::EventState(Event *event, std::string log_msg)
+{
+
 }
