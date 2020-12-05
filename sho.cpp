@@ -87,6 +87,22 @@ Facility::~Facility()
     delete queue;
 }
 
+bool Facility::Seize(Event *event)
+{
+    if(capacity > 0) {
+        capacity -= 1;
+        event->Behaviour();
+        return true;
+    }
+
+    //TODO
+}
+
+void Facility::Release()
+{
+
+}
+
 // =========================================================================
 //                              STORAGE
 // =========================================================================
@@ -116,6 +132,33 @@ Storage::Storage(std::string storage_name, size_t storage_capacity, size_t queue
 Storage::~Storage()
 {
     delete queue;
+}
+
+bool Storage::Seize(Event *event)
+{
+    if(capacity > 0) {
+        capacity -= 1;
+        event->Behaviour();
+        return true;
+    }
+
+    if(queue->limited) {
+        //if the queue is full or zero sized
+        if(queue->queued_events.size() >= queue->limit) return false;
+    }
+
+    queue->insert_event(event);
+    return true;
+}
+
+void Storage::Release()
+{
+    if(queue->queued_events.empty()) capacity += 1;
+    else {
+        //queue not empty, take one event from it instead
+        Event* e = queue->pop_front();
+        Simulator::fastforward_event(e);
+    }
 }
 
 

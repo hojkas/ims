@@ -44,11 +44,13 @@ Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zv
 
 ### Druhá vlna - SHO
 
-[X] Zapracovat do simulátoru podporu sho, aka věci jako že po eventu co sahá na facility se checkne queue té facility atd
+[&#10003;] Zapracovat do simulátoru podporu sho, aka věci jako že po eventu co sahá na facility se checkne queue té facility atd
 
-[X] Queue
+[&#10003;] Queue
 
-[X] Storage, Facility
+[&#10003;] Storage, Facility
+
+[X] Otestovat
 
 ### Třetí vlna - Simulace
 
@@ -118,6 +120,86 @@ Nadeklarovat class Generátoru s Behaviour s:
 - změnou vnitřní proměnné generátoru time přidáním žádaného náhodného rozložení
 - naplánováním do simulátoru Event, který vygeneroval, na čas time
 - naplánovat sám sebe znovu do simulátoru na čas time
+
+## HOWTO: Předávání eventů, Seize Facility/Storage and Wait
+
+### WAIT a základ akcí přes více eventů
+
+Deklarace eventů:
+
+```cpp
+class Person : public Event
+{
+    public:
+        void Behaviour();
+};
+
+class Person2 : public Event
+{
+    public:
+        Person2(Event* parent);
+        void Behaviour();
+};
+
+inline void Person::Behaviour() {
+    std::cout << get_name() << std::endl;
+    Simulator::Wait(1.0, new Person2(this));
+}
+
+inline Person2::Person2(Event* parent) {
+    event_name = parent->event_name;
+    event_id = parent->event_id;
+    priority = parent->priority;
+}
+inline void Person2::Behaviour() {
+    std::cout << get_name() << std::endl;
+}
+```
+
+V tomto případě je akce Person rozkouskovaná do dvou Eventů - `Person` a `Person2`. Při každém použití akce Wait nebo Seize je potřeba udělat více eventů. Pokud pro účely výpisů chceme ponechat event id, name a prioritu, je třeba u `Person2` vytvořit konstruktor (viz výše), který vezme event a převezme jeho vlastnosti.
+
+Po WAIT nesmí být žádné jiné funkce v Behaviour, jinak to způsobí nežádané nekonzistence.
+
+Seize Storage/Facility funguje obdobně. V napojeném eventu nebo jedním z jeho následovníků se musí volat Release, aby byla nastolena rovnováha.
+
+```cpp
+class Person : public Event
+{
+    public:
+        void Behaviour();
+};
+
+class Person2 : public Event
+{
+    public:
+        Person2(Event* parent);
+        void Behaviour();
+};
+
+inline void Person::Behaviour() {
+    std::cout << get_name() << std::endl;
+    Simulator::SeizeStorage("storage", new Person2(this));
+}
+
+inline Person2::Person2(Event* parent) {
+    event_name = parent->event_name;
+    event_id = parent->event_id;
+    priority = parent->priority;
+}
+inline void Person2::Behaviour() {
+    std::cout << get_name() << std::endl;
+    Simulator::ReleaseStorage("storage");
+}
+
+int main() {
+  Simulator::Init(0.0, 4.0);
+  Simulator::ScheduleEvent(new Person());
+  Simulator::CreateStorage("storage", 2);
+  Simulator::Run();
+}
+```
+
+Storage je třeba vytvořit funkcí CreateStorage před voláním Run.
 
 ## Téma č. 4: Implementace diskrétního simulátoru s podporou SHO
 

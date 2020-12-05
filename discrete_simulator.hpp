@@ -30,13 +30,19 @@ class Simulator
         static std::list<Event*> event_queue;
 
     public:
-        static void Init(double, double);
-        static void deconstruct();
+        //for inner use by other classes or for keen user wanting to edit more
 
-        static void Run();
-        static Event* pop_event();
-        static void ScheduleEvent(Event *);
+        static void deconstruct();
         static void fastforward_event(Event *);
+        static Event* pop_event();
+
+        //functions for user for easiest creation of simulation
+
+        static void Init(double, double);
+        static void Run();
+        static void ScheduleEvent(Event *, double);
+        static void ScheduleEvent(Event *);
+        static void Wait(double, Event *);
 
         //sho
 

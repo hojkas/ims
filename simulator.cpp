@@ -100,6 +100,38 @@ void Simulator::ScheduleEvent(Event* e)
     event_queue.push_back(e);
 }
 
+/* Inserts Event e in simulator's event_queue based on its time value
+ * @param Event* Event to insert
+ * @param double Time to schedule event to
+ */
+void Simulator::ScheduleEvent(Event* e, double time)
+{
+    e->time = time;
+    std::list<Event*>::iterator it;
+    for (it = event_queue.begin(); it != event_queue.end(); ++it)
+    {
+        if(((*it)->time == e->time && e->priority > (*it)->priority) || (*it)->time > e->time) {
+            event_queue.insert(it, e);
+            return;
+        } 
+    }
+    event_queue.push_back(e);
+}
+
+/* Schedules event after wait. 
+ * @param wait_time Time to wait. In other words, time after which the event will be scheduled. Cannot be less than 0.
+ * @param event Event to be run after wait_time.
+ */
+void Simulator::Wait(double wait_time, Event *event)
+{
+    if(wait_time < 0.0) {
+        std::cerr << "Wait time given (" << wait_time << ") cannot be less than 0." << std::endl;
+        exit(1);
+    }
+    double time = last_effective_time + wait_time;
+    ScheduleEvent(event, time);
+}
+
 
 /* Inserts event to be done immediatelly after current one. Shouldn't be called from outside,
  * is usefull for removing items from queue after Facility or Storage clears up.
@@ -204,7 +236,16 @@ void Simulator::CreateFacility(std::string facility_name)
  */
 bool Simulator::SeizeStorage(std::string storage_name, Event* event)
 {
+    std::map<std::string, Storage*>::iterator it;
+    it = storages.find(storage_name);
+    if(it == storages.end()) {
+        std::cerr << "Storage with name \"" << storage_name << "\" not found. Halting simulation. Please make sure you " <<
+            "create all the Storages needed with CreateStorage before running simulation." << std::endl;
+        deconstruct();
+        exit(1);
+    }
 
+    return it->second->Seize(event);
 }
 
 /* Tries to Seize Facility of given name. If the Facility is free, immediately does Event *event.
@@ -218,7 +259,16 @@ bool Simulator::SeizeStorage(std::string storage_name, Event* event)
  */
 bool Simulator::SeizeFacility(std::string facility_name, Event* event)
 {
+    std::map<std::string, Facility*>::iterator it;
+    it = facilities.find(facility_name);
+    if(it == facilities.end()) {
+        std::cerr << "Facility with name \"" << facility_name << "\" not found. Halting simulation. Please make sure you " <<
+            "create all the Facilites needed with CreateFacility before running simulation." << std::endl;
+        deconstruct();
+        exit(1);
+    }
 
+    return it->second->Seize(event);
 }
 
 /* Releases storage unit. Should only ever be used once by Event that was created by Event seizing Storage.
@@ -227,7 +277,16 @@ bool Simulator::SeizeFacility(std::string facility_name, Event* event)
  */
 void Simulator::ReleaseStorage(std::string storage_name)
 {
+    std::map<std::string, Storage*>::iterator it;
+    it = storages.find(storage_name);
+    if(it == storages.end()) {
+        std::cerr << "Storage with name \"" << storage_name << "\" not found. Halting simulation. Please make sure you " <<
+            "create all the Storages needed with CreateStorage before running simulation." << std::endl;
+        deconstruct();
+        exit(1);
+    }
 
+    it->second->Release();
 }
 
 /* Releases facility. Should only ever be used once by Event that was created by Event seizing Facility.
@@ -236,5 +295,14 @@ void Simulator::ReleaseStorage(std::string storage_name)
  */
 void Simulator::ReleaseFacility(std::string facility_name)
 {
+    std::map<std::string, Facility*>::iterator it;
+    it = facilities.find(facility_name);
+    if(it == facilities.end()) {
+        std::cerr << "Facility with name \"" << facility_name << "\" not found. Halting simulation. Please make sure you " <<
+            "create all the Facilites needed with CreateFacility before running simulation." << std::endl;
+        deconstruct();
+        exit(1);
+    }
 
+    it->second->Release();
 }
