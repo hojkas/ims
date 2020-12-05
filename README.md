@@ -50,7 +50,9 @@ Cokoliv bude deklarované v souboru `discreet_simulator.hpp`, půjde použít zv
 
 [&#10003;] Storage, Facility
 
-[X] Otestovat
+[&#10003;] Otestovat (briefly)
+
+[&#10003;] Learning_sample
 
 ### Třetí vlna - Simulace
 
