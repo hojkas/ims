@@ -26,9 +26,6 @@ Simulator* init_simulator(double endTime);
 
 class Simulator
 {
-    private:
-        static std::list<Event*> event_queue;
-
     public:
         //for inner use by other classes or for keen user wanting to edit more
 
@@ -61,6 +58,7 @@ class Simulator
         static double end_time;
         static double last_effective_time;
         static uint32_t free_event_id;
+        static std::list<Event*> event_queue;
 
         //maps of Facilities and storages
         static std::map<std::string, Facility*> facilities;
