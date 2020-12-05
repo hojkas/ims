@@ -95,12 +95,23 @@ bool Facility::Seize(Event *event)
         return true;
     }
 
-    //TODO
+    if(queue->limited) {
+        //if the queue is full or zero sized
+        if(queue->queued_events.size() >= queue->limit) return false;
+    }
+
+    queue->insert_event(event);
+    return true;
 }
 
 void Facility::Release()
 {
-
+    if(queue->queued_events.empty()) capacity += 1;
+    else {
+        //queue not empty, take one event from it instead
+        Event* e = queue->pop_front();
+        Simulator::fastforward_event(e);
+    }
 }
 
 // =========================================================================

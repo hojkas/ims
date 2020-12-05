@@ -59,5 +59,5 @@ void Log::SimulatorState()
 
 void Log::EventState(Event *event, std::string log_msg)
 {
-    std::cout << "[" << Simulator::last_effective_time << "] " << event->get_name() << ": " << log_msg << std::endl; 
+    std::cout << "[" << Simulator::last_effective_time << "] \t" << event->get_name() << ": " << log_msg << std::endl; 
 }

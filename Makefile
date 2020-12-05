@@ -18,5 +18,10 @@ test:
 lazy:
 	g++ *pp -o $(testoutput)
 
+learning:
+	@g++ $(simulator_files) learning_sample.cpp -o learning_sample
+	@./learning_sample
+	@rm learning_sample
+
 clean:
 	rm $(output) $(testoutput)
