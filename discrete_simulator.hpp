@@ -201,10 +201,11 @@ class TimeoutWatch : public Event
         Event* queued_event;
         Queue* queue_with_event;
         TimeoutWatch(Event* on_success_event, Event* on_timeout_event, Queue* queue_with_on_success_event);
+        void Behaviour();
 
         friend Simulator;
-    public:
-       void Behaviour();
+        friend Storage;
+        friend Facility;
 };
 
 // =========================================================================
