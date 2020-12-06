@@ -1,9 +1,5 @@
 /* statistics.cpp
-* TODO edit later
-* for getting outcome we need out of simulation
-* perhaps there should be some kind of calling from simulator after getting next event
-* and here could be functions set to different values, depending on setting, getting out
-* some output or not
+* for creating output out of simulation
 */
 
 #include "discrete_simulator.hpp"

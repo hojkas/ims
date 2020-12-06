@@ -1,8 +1,8 @@
 /*
 * simulator.cpp
-* TODO edit later
-* main component, for init simulation, seting time, controlling events by calling next from
-* event queue etc.
+* main component and main interface for user
+* handles creating simulation time, scheduling events and working them out one by one.
+* also helps user to create and use Storages and Facilites
 */
 
 #include "discrete_simulator.hpp"

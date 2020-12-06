@@ -1,7 +1,6 @@
 /*
 * events.cpp
 * for creating and handling Events
-* Event - main component of simulator
 */
 
 #include "discrete_simulator.hpp"

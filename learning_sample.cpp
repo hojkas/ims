@@ -131,7 +131,7 @@ class PersonGenerator : public EventGenerator
             Simulator::ScheduleEvent(new_p, time);
             //ScheduleEvent: sebe na nový čas, aby vygeneroval dalšího
             //takto generje jednoho po druhém
-            Simulator::ScheduleEvent(this);
+            Simulator::ScheduleEvent(this, time);
         }
 };
 

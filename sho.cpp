@@ -1,7 +1,6 @@
 /* sho.cpp
  * SHO - system hromadne obsluhy
- * TODO edit this later
- * should cover Queues, Storages, Facitilies
+ * covers Queues, Storages, Facitilies
 */
 
 #include "discrete_simulator.hpp"

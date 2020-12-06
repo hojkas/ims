@@ -37,11 +37,11 @@ class Simulator
         static void deconstruct();
         static void fastforward_event(Event *);
         static Event* pop_event();
+        static void ScheduleEvent(Event *);
 
         //properties
         static double start_time;
         static double end_time;
-        static double last_effective_time;
         static uint32_t free_event_id;
         static std::list<Event*> event_queue;
 
@@ -58,22 +58,84 @@ class Simulator
         friend class Log;
 
     public:
-
-        static void Init(double, double);
+        /* Inicializes simulator. Must be called before any other simulator function is used.
+         * @param start_time Time of beggining of simulation. All events before are ignored.
+         * @param end_time Time of end of simulation. All events after are ignored.
+         */
+        static void Init(double start_time, double end_time);
+        /* Executes the simulation and deconstructs all simulator parts. Unless it is
+         * followed by another Init, no other simulator function should be used after Run was called.
+         */
         static void Run();
-        static void ScheduleEvent(Event *, double);
-        static void ScheduleEvent(Event *);
-        static void Wait(double, Event *);
+        /* Schedules Event into Simulator to the time given. If there are more events
+         * with the same time, they are sorted according to their priority.
+         * @param event Event to schedule.
+         * @param time Time to schedule the event.
+         */
+        static void ScheduleEvent(Event *event, double time);
+        /* Waits for given time and then executes given event. For the true purpose of
+         * pausing the event and waiting some time, Event needs to be "split" in two parts.
+         * First part ends with Wait and the second part, separate Event, is given to the
+         * Wait as parameter. Once the wait is over, new event is executed.
+         * @param time waiting time
+         * @param event Event which Behaviour will be executed once the wait is over.
+         */
+        static void Wait(double time, Event *event);
 
-        static void CreateStorage(std::string, size_t);
-        static void CreateStorage(std::string, size_t, size_t);
-        static void CreateFacility(std::string);
-        static void CreateFacility(std::string, size_t);
+        /* Creates Storage of given name and capacity with unlimited queue in Simulator.
+         * @param name Name of storage.
+         * @param capacity Capacity of storage.
+         */
+        static void CreateStorage(std::string name, size_t capacity);
+        /* Creates Storage of given name and capacity with limited queue in Simulator.
+         * @param name Name of storage.
+         * @param capacity Capacity of storage.
+         * @param queue_limit Limit of events waiting in the queue.
+         */
+        static void CreateStorage(std::string name, size_t capacity, size_t queue_limit);
+        /* Creates Facility of given name with ulimited queue in Simulator.
+         * @param name Name of Facility.
+         */
+        static void CreateFacility(std::string name);
+        /* Creates Facility of given name with limited queue in Simulator.
+         * @param name Name of Facility.
+         * @param queue_limit Limit of events waiting in the queue.
+         */
+        static void CreateFacility(std::string name, size_t queue_limit);
 
-        static bool SeizeStorage(std::string, Event *);
-        static bool SeizeFacility(std::string, Event *);
-        static void ReleaseStorage(std::string);
-        static void ReleaseFacility(std::string);
+        /* Tries to seize Storage. As in Wait, after Seize shouldn't be any other actions
+         * in event. Event passed to this function will be executed after accessing Storage.
+         * @param storage_name Name of Storage to Seize.
+         * @param event Event to execute after successfully Seizing Storage.
+         * @return Bool true if event Seized Storage or was taken to its Queue. False if
+         * the queue was limited and already full. (Gives the event trying to Seize
+         * opportunity to do something else.)
+         */
+        static bool SeizeStorage(std::string storage_name, Event *event);
+        /* Tries to seize Facility. As in Wait, after Seize shouldn't be any other actions
+         * in event. Event passed to this function will be executed after accessing Facility.
+         * @param facility_name Name of Facility to Seize.
+         * @param event Event to execute after successfully Seizing Facility.
+         * @return Bool true if event Seized Facility or was taken to its Queue. False if
+         * the queue was limited and already full. (Gives the event trying to Seize
+         * opportunity to do something else.)
+         */
+        static bool SeizeFacility(std::string facility_name, Event *event);
+        /* Releases Storage. Should be used only once in event that is successor of event
+         * that Seized the Storage in the first place. Unlike Seize and Wait, this action
+         * doesn't need to be at the end of Behaviour and doesn't require event split in two.
+         * @param storage_name Name of Storage to Release
+         */
+        static void ReleaseStorage(std::string storage_name);
+        /* Releases Facility. Should be used only once in event that is successor of event
+         * that Seized the Facility in the first place. Unlike Seize and Wait, this action
+         * doesn't need to be at the end of Behaviour and doesn't require event split in two.
+         * @param facility_name Name of Facility to Release
+         */
+        static void ReleaseFacility(std::string facility_name);
+
+        //time of event that was triggered most recently
+        static double last_effective_time;
 };
 
 // =========================================================================
@@ -113,7 +175,7 @@ class EventGenerator : public Event
 // =========================================================================
 //sho - systém hromadné obsluhy
 
-//private, only for Facility and Storage use
+//Queue, Facility and Storage are not usable from outside, they can be interacted with only through Simulator methods
 class Queue
 {
     private:
@@ -200,9 +262,17 @@ public:
 // =========================================================================
 //                         staticstics.cpp definitions
 // =========================================================================
+//Class Log helps user get information about state of Simulator and Event on stdout.
 class Log {
 public:
+    //Writes state of simulator on stdout. Includes such information as simulation time, number of
+    //queued events and details about defined Storages and Facilites.
     static void SimulatorState();
+    /* Writes simulation time, event name or identifier and given message on stdout.
+     * @param Event* Event which name will be shown in output.
+     * @param std::string Message to include with event to make simulation output
+     * more descriptive. (e.g. "seized facility XY")
+    */
     static void EventState(Event *, std::string);
 };
 
