@@ -149,7 +149,7 @@ inline void LiftTripBack::Behaviour()
 inline void LiftReturns::Behaviour()
 {
 	Simulator::ReleaseStorage("kotva");
-	std::cout << "[" << Simulation::last_effective_time << "]\t  Kotva se vratila" 
+	std::cout << "[" << Simulator::last_effective_time << "]\t  Kotva se vratila" << std::endl;
 }
 
 
@@ -201,8 +201,11 @@ class RacerGenerator : public EventGenerator
 
 int main()
 {
-    
 	Simulator::Init(0.0, 100.0);
+    RandomGenerator::SetSeed(1607298254);
+    std::cout << "Seed of simulation: " <<RandomGenerator::randomNumber << std::endl;
+    std::cout << "To repeat simulation use RandomGenerator::SetSeed(" << RandomGenerator::randomNumber << "); " << 
+    "before the beginning of the simulation" << std::endl;
 	Simulator::ScheduleEvent(new SkierGenerator(), 0.0);
 	Simulator::ScheduleEvent(new RacerGenerator(), 0.0);
 	Simulator::CreateFacility("stanoviste");

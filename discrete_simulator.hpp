@@ -14,6 +14,7 @@
 #include <cmath>
 #include <limits>
 #include <utility>
+#include <ctime>
 
 //general definitions that need to be used before referencing
 class Simulator;
@@ -292,7 +293,7 @@ private:
 public:
 
     static uint32_t randomNumber;
-
+    static void SetSeed(uint32_t seed);
     static double Random();
     static double Uniform(double MIN, double MAX);
     static double Exponential(double E);

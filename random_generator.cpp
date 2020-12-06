@@ -13,8 +13,13 @@ double RandomGenerator::second_BM_variable;
 void RandomGenerator::Init()
 {
     // Base Seed
-    randomNumber = uint32_t(0x626f6f70);
+    randomNumber = time(nullptr);
     second_BM_variable = 0.0;
+}
+
+void RandomGenerator::SetSeed(uint32_t seed)
+{
+    randomNumber = seed;
 }
 
 void RandomGenerator::deconstruct()
