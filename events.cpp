@@ -20,17 +20,6 @@ Event::~Event()
 
 }
 
-//operators override
-bool Event::operator<(Event& e)
-{
-    return (time < e.time);
-}
-
-bool Event::operator>(Event& e)
-{
-    return (time > e.time);
-}
-
 std::string Event::get_name()
 {
     if(event_name.empty()) {

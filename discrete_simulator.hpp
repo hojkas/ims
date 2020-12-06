@@ -20,6 +20,9 @@ class Simulator;
 class Event;
 class Storage;
 class Facility;
+class Queue;
+class Log;
+class EventGenerator;
 
 // =========================================================================
 //                          simulator.cpp definitions
@@ -29,32 +32,11 @@ Simulator* init_simulator(double endTime);
 
 class Simulator
 {
-    public:
-        //for inner use by other classes or for keen user wanting to edit more
-
+    private:
+        //functions
         static void deconstruct();
         static void fastforward_event(Event *);
         static Event* pop_event();
-
-        //functions for user for easiest creation of simulation
-
-        static void Init(double, double);
-        static void Run();
-        static void ScheduleEvent(Event *, double);
-        static void ScheduleEvent(Event *);
-        static void Wait(double, Event *);
-
-        //sho
-
-        static void CreateStorage(std::string, size_t);
-        static void CreateStorage(std::string, size_t, size_t);
-        static void CreateFacility(std::string);
-        static void CreateFacility(std::string, size_t);
-
-        static bool SeizeStorage(std::string, Event *);
-        static bool SeizeFacility(std::string, Event *);
-        static void ReleaseStorage(std::string);
-        static void ReleaseFacility(std::string);
 
         //properties
         static double start_time;
@@ -67,35 +49,63 @@ class Simulator
         static std::map<std::string, Facility*> facilities;
         static std::map<std::string, Storage*> storages;
 
+        //friend classes from our simulator to be allowed to use private properties
+        friend class Event;
+        friend class EventGenerator;
+        friend class Storage;
+        friend class Facility;
+        friend class Queue;
+        friend class Log;
+
+    public:
+
+        static void Init(double, double);
+        static void Run();
+        static void ScheduleEvent(Event *, double);
+        static void ScheduleEvent(Event *);
+        static void Wait(double, Event *);
+
+        static void CreateStorage(std::string, size_t);
+        static void CreateStorage(std::string, size_t, size_t);
+        static void CreateFacility(std::string);
+        static void CreateFacility(std::string, size_t);
+
+        static bool SeizeStorage(std::string, Event *);
+        static bool SeizeFacility(std::string, Event *);
+        static void ReleaseStorage(std::string);
+        static void ReleaseFacility(std::string);
 };
 
 // =========================================================================
 //                          events.cpp definitions
 // =========================================================================
+
+//Class for creating Events. Each new Event should have it as parent when defining it.
 class Event
 {
-    public:
-        Event();
-        ~Event();
-        
-        virtual void Behaviour() = 0;
-        std::string get_name();
+    private:
 
-        //operations
-        bool operator<(Event&);
-        bool operator>(Event&);
-        std::string event_name;
-        double time; 
-        int priority;
-        uint32_t event_id;
+    public:
+        Event();                        //default constructor (sets priority to 0, assings event_id)
+        ~Event();                       //default deconstructor
         
-        bool repeat_itself;
+        virtual void Behaviour() = 0;   //to be overriden in child class, place to define what will Event do
+        std::string get_name();         //help to get event name, returns event#event_id if it doesn't have name
+        std::string event_name;         //optional name of event to make simulation more organised
+        double time;                    //inner variable for scheduling, should only be accessed by generator, not
+                                        //regular events to avoid inconsistency
+        int priority;                   //priority of event, should it be in queue or at same time as another event, it skipps
+                                        //lesser priority
+        uint32_t event_id;              //at the time of construct unique id of event, may be overriden to make new event
+                                        //look like another one continuing (e.g. after Wait), only affects output name 
+        bool repeat_itself;             //if true, event is not deconstruct after being run (desired for generators)
 };
 
+//Class for Generator of events. Each Generator class should have this class as parent.
 class EventGenerator : public Event
 {
     public:
-        EventGenerator();
+        EventGenerator();               //default generator, does what Event() but sets repeat_itself to true
 };
 
 // =========================================================================
@@ -106,7 +116,7 @@ class EventGenerator : public Event
 //private, only for Facility and Storage use
 class Queue
 {
-    public:
+    private:
         Queue();
         Queue(size_t);
         ~Queue();
@@ -118,11 +128,16 @@ class Queue
         bool limited;
         size_t limit;
         std::list<Event*> queued_events;
+
+        friend class Simulator;
+        friend class Log;
+        friend class Facility;
+        friend class Storage;
 };
 
 class Facility
 {
-    public:
+    private:
         Facility(std::string);
         Facility(std::string, size_t);
         ~Facility();
@@ -132,11 +147,14 @@ class Facility
         std::string name;
         size_t capacity;
         Queue* queue;
+
+        friend class Simulator;
+        friend class Log;
 };
 
 class Storage
 {
-    public:
+    private:
         Storage(std::string, size_t);
         Storage(std::string, size_t, size_t);
         ~Storage();
@@ -146,6 +164,9 @@ class Storage
         std::string name;
         size_t capacity;
         Queue* queue;
+
+        friend class Simulator;
+        friend class Log;
 };
 
 // =========================================================================
@@ -160,9 +181,14 @@ private:
     // Generates a new random number into randomNumber
     static void RandomNumberGenerator();
 
-public:
     static void Init();
     static void deconstruct();
+
+    friend class Simulator;
+    friend class Log;
+
+public:
+
     static uint32_t randomNumber;
 
     static double Random();

@@ -25,6 +25,7 @@ void Simulator::Init(double start_t, double end_t)
     free_event_id = 0;
     facilities.clear();
     storages.clear();
+    RandomGenerator::Init();
 }
 
 void Simulator::deconstruct()
@@ -44,6 +45,7 @@ void Simulator::deconstruct()
         delete kv.second;
     }
     storages.clear();
+    RandomGenerator::deconstruct();
 }
 
 /* Runs the simulaton from data previously set up in Simulator. Will simulate events from start time to end time.
