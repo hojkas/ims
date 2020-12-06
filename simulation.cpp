@@ -92,7 +92,6 @@ inline void PersonInQueue::Behaviour()
 		Log::EventState(this, "nepovedlo se nasednout na kotvu");
 		Event *lift = new EmptyLift();
 		Simulator::ScheduleEvent(lift, Simulator::last_effective_time);
-		std::cout << "Schedule event lift for " << Simulator::last_effective_time << std::endl;
 		Event *new_person = new PersonInQueue(this);
 		Simulator::SeizeStorage("kotva", new_person);
 	}
@@ -109,7 +108,6 @@ inline void PersonOnLift::Behaviour()
 	Log::EventState(this, "je na kotve");
 	Simulator::ReleaseFacility("stanoviste");
 	Event *new_person = new PersonLeavesLift(this);
-	Log::SimulatorState();
 	Simulator::Wait(4.0, new_person);
 }
 
@@ -129,7 +127,6 @@ inline void PersonLeavesLift::Behaviour()
 
 inline void EmptyLift::Behaviour()
 {
-	std::cout << "Zmeskana kotva" << std::endl;
 	Event *new_event = new EmptyLiftTrip();
 	new_event->event_id = event_id;
 	Simulator::SeizeStorage("kotva", new_event);
@@ -152,13 +149,11 @@ inline void LiftTripBack::Behaviour()
 inline void LiftReturns::Behaviour()
 {
 	Simulator::ReleaseStorage("kotva");
-	std::cout << "Kotva se vratila" << std::endl;
-	Log::SimulatorState();
-
+	std::cout << "[" << Simulation::last_effective_time << "]\t  Kotva se vratila" 
 }
 
 
-class SkierGenerator : public Event
+class SkierGenerator : public EventGenerator
 {
 	private:
 		int person_id;
@@ -180,7 +175,7 @@ class SkierGenerator : public Event
 		}
 };
 
-class RacerGenerator : public Event
+class RacerGenerator : public EventGenerator
 {
 	private:
 		int person_id;
