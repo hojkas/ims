@@ -112,6 +112,30 @@ class Simulator
          * opportunity to do something else.)
          */
         static bool SeizeStorage(std::string storage_name, Event *event);
+        /* Tries to seize Storage. As in Wait, after Seize shouldn't be any other actions
+         * in event. Event passed to this function will be executed after accessing Storage.
+         * @param storage_name Name of Storage to Seize.
+         * @param timeout_time Time after which the success_event will be removed from queue and timeout
+         * event will be run instead
+         * @param on_success_event Event to execute after successfully Seizing Storage.
+         * @param on_timeout_event Event that will be executed if timeout occurs.
+         * @return Bool true if event Seized Storage or was taken to its Queue. False if
+         * the queue was limited and already full. (Gives the event trying to Seize
+         * opportunity to do something else.)
+         */
+        static bool SeizeStorageWithTimeout(std::string storage_name, double timeout_time, Event *on_success_event, Event *on_timeout_event);
+        /* Tries to seize Facility. As in Wait, after Seize shouldn't be any other actions
+         * in event. Event passed to this function will be executed after accessing Facility.
+         * @param timeout_time Time after which the success_event will be removed from queue and timeout
+         * event will be run instead
+         * @param on_success_event Event to execute after successfully Seizing Storage.
+         * @param on_timeout_event Event that will be executed if timeout occurs.
+         * @param event Event to execute after successfully Seizing Facility.
+         * @return Bool true if event Seized Facility or was taken to its Queue. False if
+         * the queue was limited and already full. (Gives the event trying to Seize
+         * opportunity to do something else.)
+         */
+        static bool SeizeFacility(std::string facility_name, Event *event);
         /* Tries to seize Facility. As in Wait, after Seize shouldn't be any other actions
          * in event. Event passed to this function will be executed after accessing Facility.
          * @param facility_name Name of Facility to Seize.
@@ -120,7 +144,7 @@ class Simulator
          * the queue was limited and already full. (Gives the event trying to Seize
          * opportunity to do something else.)
          */
-        static bool SeizeFacility(std::string facility_name, Event *event);
+        static bool SeizeFacilityWithTimeout(std::string facility_name, double timeout_time, Event *on_success_event, Event *on_timeout_event);
         /* Releases Storage. Should be used only once in event that is successor of event
          * that Seized the Storage in the first place. Unlike Seize and Wait, this action
          * doesn't need to be at the end of Behaviour and doesn't require event split in two.
@@ -170,6 +194,19 @@ class EventGenerator : public Event
         EventGenerator();               //default generator, does what Event() but sets repeat_itself to true
 };
 
+class TimeoutWatch : public Event
+{
+    private:
+        Event* on_timeout_event;
+        Event* queued_event;
+        Queue* queue_with_event;
+        TimeoutWatch(Event* on_success_event, Event* on_timeout_event, Queue* queue_with_on_success_event);
+
+        friend Simulator;
+    public:
+       void Behaviour();
+};
+
 // =========================================================================
 //                          sho.cpp definitions
 // =========================================================================
@@ -186,6 +223,7 @@ class Queue
         Event* pop_front();
         bool push_back(Event*);
         bool insert_event(Event *);
+        bool remove_event(Event *);
 
         bool limited;
         size_t limit;
@@ -195,6 +233,7 @@ class Queue
         friend class Log;
         friend class Facility;
         friend class Storage;
+        friend class TimeoutWatch;
 };
 
 class Facility

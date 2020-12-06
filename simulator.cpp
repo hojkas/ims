@@ -250,6 +250,21 @@ bool Simulator::SeizeStorage(std::string storage_name, Event* event)
     return it->second->Seize(event);
 }
 
+bool Simulator::SeizeStorageWithTimeout(std::string storage_name, double timeout_time, Event* on_success, Event* on_timeout)
+{
+    std::map<std::string, Storage*>::iterator it;
+    it = storages.find(storage_name);
+    if(it == storages.end()) {
+        std::cerr << "Storage with name \"" << storage_name << "\" not found. Halting simulation. Please make sure you " <<
+            "create all the Storages needed with CreateStorage before running simulation." << std::endl;
+        deconstruct();
+        exit(1);
+    }
+
+    ScheduleEvent(new TimeoutWatch(on_success, on_timeout, it->second->queue), last_effective_time + timeout_time);
+    return it->second->Seize(on_success);
+}
+
 /* Tries to Seize Facility of given name. If the Facility is free, immediately does Event *event.
  * If facility isn't free, event is stored in facility queue according to its priority, until there is
  * free space. If the queue is full (the Facility was created with limited queue), Event* event is NOT handled at all and
@@ -271,6 +286,21 @@ bool Simulator::SeizeFacility(std::string facility_name, Event* event)
     }
 
     return it->second->Seize(event);
+}
+
+bool Simulator::SeizeFacilityWithTimeout(std::string facility_name, double timeout_time, Event* on_success, Event* on_timeout)
+{
+    std::map<std::string, Facility*>::iterator it;
+    it = facilities.find(facility_name);
+    if(it == facilities.end()) {
+        std::cerr << "Facility with name \"" << facility_name << "\" not found. Halting simulation. Please make sure you " <<
+            "create all the Facilites needed with CreateFacility before running simulation." << std::endl;
+        deconstruct();
+        exit(1);
+    }
+
+    ScheduleEvent(new TimeoutWatch(on_success, on_timeout, it->second->queue), last_effective_time + timeout_time);
+    return it->second->Seize(on_success);
 }
 
 /* Releases storage unit. Should only ever be used once by Event that was created by Event seizing Storage.

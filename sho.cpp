@@ -57,6 +57,19 @@ Event* Queue::pop_front()
     return poped;
 }
 
+bool Queue::remove_event(Event *event)
+{
+    std::list<Event*>::iterator it;
+    for (it = queued_events.begin(); it != queued_events.end(); ++it)
+    {
+        Event* selected = (*it);
+        if(selected == event) {
+            queued_events.remove(*it);
+            return true;
+        }
+    }
+}
+
 // =========================================================================
 //                              FACILITY
 // =========================================================================
