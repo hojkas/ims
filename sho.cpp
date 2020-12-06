@@ -68,6 +68,7 @@ bool Queue::remove_event(Event *event)
             return true;
         }
     }
+    return false;
 }
 
 // =========================================================================
