@@ -280,6 +280,8 @@ class RandomGenerator
 {
 private:
     static double second_BM_variable;
+    static double original_mu;
+    static double original_sigma;
     static constexpr double fraction { 1.0 / ((double)UINT32_MAX + 1.0) };
     // Generates a new random number into randomNumber
     static void RandomNumberGenerator();

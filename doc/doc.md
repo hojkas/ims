@@ -83,19 +83,30 @@ Generátor obsahuje funkci pro generování následujících náhodných čísel
 
 #### Random - náhodné od 0 do 1
 
-TODO Denis - popsat jak a graf jak to vychází
+Náhodně vygenerované 32 bitové číslo `uint32_t randomNumber` je vygenerované pomocí `RandomNumberGenerator()`, pak je vyděleno maximálním čislem pro rozshah uint32_t plus 1.0. Táto matematická operace vrací respektivní číslo z oboru [0,1). Táto hodnota je prěvedena na hodnotu typu double a je vrácena.
+Níže je uveden graf s naměrenými hodnotami a vývinem střední hodnoty naměrených hodnot - počet měrení byl jeden milion a počátečná hodnota `randomNumber` byl 0x626f6f70.
 
 #### Uniformní
 
-TODO Denis - popsat jak a graf jak to vychází
+Podobně jak ve funkci `Random()` je číslo vygenerované pomocí `RandomNumberGenerator()` a je vyděleno rovnakou hodnotou jak ve funkci `Random()`, avšak hodnota `randomNumber`
+je vynásobena rozdílem mezi vrchní a spodnou hranicí uniformního rozdelení, což navráti hodnotu v oboru [0, MAX) , kde MAX je vrchní hranicí uniformního rozdelení. Pak je
+k tomuto výsledku připočítána spodni hranice rozdelení pro získání čísla z výsledného oboru [MIN, MAX), kde MIN je spodni hranice a MAX je vrchní hranice rozdelení.
+Níže je uveden graf s naměrenými hodnotami a vývinem střední hodnoty naměrených hodnot - počet měrení byl jeden milion, počátečná hodnota `randomNumber` byl 0x626f6f70, spodní hranice byla pět a vrchní deset.
+
 
 #### Exponenciální
 
-TODO Denis - popsat jak a graf jak to vychází
+Generovali sme hodnoty s exponenciálním rozdelením pomoci vzorce T = F<sup>-1</sup><sub>X</sub>(U), kde F<sup>-1</sup><sub>X</sub> je inverzni distribuční funkce pro exponenciální rozdelení a U je hodnota z rovnoměrného rozdelení z oboru [0,1]. Tento výpočet vychází z metody inverzní transformace, kde pokud X je náhodnou hodnotou ze spojité množiny pro kterou existuje distribuční funkce. Tak potom náhodná proměnná U = F<sub>X</sub>(X) má rovnoměrné rozložení na oboru [0,1]. Takže pokud, U má náhodní rovnoměrné rozložení na oboru [0, 1] a X má distribuční funkci F<sub>X</sub>, tak potom náhodná proměnná T = F<sup>-1</sup><sub>X</sub>(U) má rovnaké rozložení ako X. Tímto procesem dospějeme ke vzorci T = E(X) * log(U), kde U je hodnota získaná za pomoci funkce `Random()`.
+
+Níže je uvedem histogram pro naměrené hodnoty z funkce `Exponencial(1)`, počet dílkú je 100 pro obor [0, 10] - počet měrení byl jeden milion, počátečná hodnota `randomNumber` byl 0x626f6f70.
+
 
 #### Normální
 
-TODO Denis - popsat jak a graf jak to vychází
+Generovali sme hodnoty s normálním rozdelením pomocí Box-Mullerovi transformace, kde jsou vygenerovány dvě čisla `z0` a `z1`, ktoré jsou nezávyslé čísla s normálním rozdelením se strědní hodnotou `mu` a rozpltylem `sigma`. Je navráceno jedno z těchto čísel a druhé je uskladněno pro další volání funkce. Tím pádem, funkce je nucena provádet výpočet iba při každém sudém volání funkce, nebo pri změne `mu` anebo `sigma` mezi volaními.
+
+
+Níže je uvedem histogram pro naměrené hodnoty z funkce `Normal(0,1)`, počet dílkú je 100 pro celý obor hodnot - počet měrení byl jeden milion, počátečná hodnota `randomNumber` byl 0x626f6f70.
 
 ### Systém hromadné obsluhy (`sho.cpp`)
 
@@ -187,9 +198,9 @@ Protože jejich roli v simulaci “přebírají” přiložené eventy, které s
 
 `RandomGenerator::SetSeed(seed)` - nastaví hodnotu seed na požadovanou hodnotu
 
-`RandomGenerator::Random()` - vrátí náhodnou hodnotu z intervalu od 0 do 1
+`RandomGenerator::Random()` - vrátí náhodnou hodnotu z intervalu [0, 1) s rovnoměrným rozdelením
 
-`RandomGenerator::Uniform(low, high)` - vrátí náhodnou hodnotu z intervalu od low do high
+`RandomGenerator::Uniform(low, high)` - vrátí náhodnou hodnotu z intervalu [low, high) s rovnoměrným rozdelením
 
 `RandomGenerator::Exponential(mean)` - vrátí náhodnou hodnotu z exponenciální rozložení se středem v mean
 
@@ -209,15 +220,21 @@ Podrobnější popis zde zmíněných funkcí, jejich parametrů a efektů na si
 
 # 3. Simulace
 
-TODO Denis - zdroj příkladu a slovní zadání
+Příklad "vlek":
+
+- Lyžaři: obyčejní - exp(1), závodníci - exp(10), závodníci mají přednost
+- 40 kotev, jedno startovní stanovište
+- při nastupování:
+	- 10% - chyba, nástup se opkauje, kotva jede dál
+	- 90% - 4 min nahoru, kotva jede další 4 min zpět
 
 ## Abstraktní model
 
-TODO Denis - tu petriho síť, to je abstraktní model
+TODO insert petriNet.png
 
-## …
+## Implementace simulace
 
-TODO Denis - něco o implementaci simulace
+Podařilo se nám implementovat abstraktní model Petriho sítě v podstate bezezměny. Jednotlivé implementované stavy jsou deklarovány na začátku `simulation.cpp` souboru a dedí své vlastnosti od třídy Event. Její chování je zavedeno pomocí funkcí SeizeFacility, SeizeStorage, Wait, ScheduleEvent, ReleaseFacility a ReleaseStorage, kterých konkrétní implementace najdete ve funkci Behaviour() pro každou třidu. Stavy `kotva` a `stanoviste` byly zavedeny pomocí CreateStorage s kapacitou 40 a CreateFacility respektivne, obě byli zavedeny bez omezení na délku fronty. Zdroje pro generování lyžařů a závodníků, byli implementovány pomocí třídy `EventGenerator` ze simulátoru a délky mezi jejich opakováním jsou dány návratovou hodnotou funkcí `Exponencial(1.0)` a `Exponencial(10.0)` respektivne.
 
 <div style="page-break-after: always; break-after: page;"></div>
 

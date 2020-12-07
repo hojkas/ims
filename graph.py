@@ -76,7 +76,8 @@ def main():
         exponential_hist, exp_bins = np.histogram(np_exponential, bins=[(i/10) for i in range(0, 100)], density=True)
         exp_bin_centers = (exp_bins[1:] + exp_bins[:-1]) * 0.5
         plt.plot(exp_bin_centers, exponential_hist, c='crimson', label='Distribuční funkce pro Exponential(1).\n Počet dílkú n=100')
-        plt.ylim((0.00, 0.60))
+        plt.ylim((0.00, 1.0))
+        plt.xlim(0.00)
         plt.xticks([x for x in range(0, 11)])
         plt.xlabel('Hodnota dílku n')
         plt.ylabel('Pravděpodobnost hodnoty dílku n')

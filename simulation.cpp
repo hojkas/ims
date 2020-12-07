@@ -34,12 +34,6 @@ class PersonLeavesLift : public Event
 		void Behaviour();
 };
 
-class EmptyLift : public Event
-{
-	public:
-		void Behaviour();
-};
-
 class EmptyLiftTrip : public Event
 {
 	public:
@@ -85,16 +79,8 @@ inline PersonInQueue::PersonInQueue(Event *parent)
 inline void PersonInQueue::Behaviour()
 {
 	Log::EventState(this, "ceka na kotvu");
-	if (RandomGenerator::Random() > 0.1){
-		Event *new_person = new PersonOnLift(this);
-		Simulator::SeizeStorage("kotva", new_person);
-	}	else{
-		Log::EventState(this, "nepovedlo se nasednout na kotvu");
-		Event *lift = new EmptyLift();
-		Simulator::ScheduleEvent(lift, Simulator::last_effective_time);
-		Event *new_person = new PersonInQueue(this);
-		Simulator::SeizeStorage("kotva", new_person);
-	}
+	Event *new_person = new PersonOnLift(this);
+	Simulator::SeizeStorage("kotva", new_person);
 }
 
 inline PersonOnLift::PersonOnLift(Event *parent)
@@ -105,10 +91,18 @@ inline PersonOnLift::PersonOnLift(Event *parent)
 
 inline void PersonOnLift::Behaviour()
 {
-	Log::EventState(this, "je na kotve");
-	Simulator::ReleaseFacility("stanoviste");
-	Event *new_person = new PersonLeavesLift(this);
-	Simulator::Wait(4.0, new_person);
+	if (RandomGenerator::Random() > 0.1){
+		Log::EventState(this, "je na kotve");
+		Simulator::ReleaseFacility("stanoviste");
+		Event *new_person = new PersonLeavesLift(this);
+		Simulator::Wait(4.0, new_person);
+	} else {
+		Log::EventState(this, "nepodari se naskocit na kotvu");
+		Event *new_event = new EmptyLiftTrip();
+		Simulator::ScheduleEvent(new_event, Simulator::last_effective_time);
+		Event *new_person = new PersonInQueue(this);
+		Simulator::ScheduleEvent(new_person, Simulator::last_effective_time);
+	}
 }
 
 inline PersonLeavesLift::PersonLeavesLift(Event *parent)
@@ -123,13 +117,6 @@ inline void PersonLeavesLift::Behaviour()
 	Event *new_event = new LiftTripBack();
 	new_event->event_id = event_id;
 	Simulator::Wait(4.0, new_event);
-}
-
-inline void EmptyLift::Behaviour()
-{
-	Event *new_event = new EmptyLiftTrip();
-	new_event->event_id = event_id;
-	Simulator::SeizeStorage("kotva", new_event);
 }
 
 inline void EmptyLiftTrip::Behaviour()
@@ -209,7 +196,7 @@ int main()
 	Simulator::ScheduleEvent(new SkierGenerator(), 0.0);
 	Simulator::ScheduleEvent(new RacerGenerator(), 0.0);
 	Simulator::CreateFacility("stanoviste");
-	Simulator::CreateStorage("kotva", 40);
+	Simulator::CreateStorage("kotva", 1);
 	Log::SimulatorState();
 	Simulator::Run();
 

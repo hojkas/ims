@@ -9,12 +9,16 @@
 
 uint32_t RandomGenerator::randomNumber;
 double RandomGenerator::second_BM_variable;
+double RandomGenerator::original_mu;
+double RandomGenerator::original_sigma;
 
 void RandomGenerator::Init()
 {
     // Base Seed
     randomNumber = time(nullptr);
     second_BM_variable = 0.0;
+    original_mu = 0.0;
+    original_sigma = 0.0;
 }
 
 void RandomGenerator::SetSeed(uint32_t seed)
@@ -47,23 +51,23 @@ double RandomGenerator::Uniform(double MIN, double MAX)
 {
     
     RandomNumberGenerator();
-    return MIN + (randomNumber / (((double) UINT32_MAX + 1.0) / (MAX - MIN)));
+    return MIN + (randomNumber * (MAX - MIN) * fraction);
 }
 
 double RandomGenerator::Exponential(double MEAN)
 {
-    return - MEAN / log(Random());
+    return - MEAN * log(Random());
 }
 
 double RandomGenerator::Normal(double mu, double sigma)
 {
-    if (second_BM_variable){
+    if (second_BM_variable && original_mu == mu && original_sigma == sigma){
         auto temp = second_BM_variable;
         second_BM_variable = 0.0;
         return temp;
     }
 
-        /*
+    /*
      *  Zdroj: https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform
      * Pouzite v sulade s licencnymi podmienkami wikipedia.org o znovu-pouzivani text pod licenciou
      * Creative Commons Attribution Share-Alike License 3.0 - https://creativecommons.org/licenses/by-sa/3.0/ 
@@ -87,6 +91,8 @@ double RandomGenerator::Normal(double mu, double sigma)
      */
 
     second_BM_variable = z1;
+    original_sigma = sigma;
+    original_mu = mu;
     
     return z0;
 }
