@@ -65,7 +65,7 @@ Procházení eventů, akce po spuštění simulace příkazem `Run()`, probíhá
 
 Simulátor také obsahuje mapy všech vytvořených zařízení a skladů, které uživateli umožňuje vytvářet a které se mohou eventy pokusit zabrat a následně opustit. Při pokusu o zabrání zařízení či skladu navíc umožňuje nastavit timeout pro čekání ve frontě při nedostatku kapacity.
 
-### Events (`events.cpp`)
+### Eventy (`events.cpp`)
 
 Existují zde tři druhy tříd eventů.
 
@@ -81,32 +81,41 @@ Pseudo generátor náhodných rozložení pro svou funkci využívá náhodného
 
 Generátor obsahuje funkci pro generování následujících náhodných čísel:
 
+<div style="page-break-after: always; break-after: page;"></div>
+
 #### Random - náhodné od 0 do 1
 
-Náhodně vygenerované 32 bitové číslo `uint32_t randomNumber` je vygenerované pomocí `RandomNumberGenerator()`, pak je vyděleno maximálním čislem pro rozshah uint32_t plus 1.0. Táto matematická operace vrací respektivní číslo z oboru [0,1). Táto hodnota je prěvedena na hodnotu typu double a je vrácena.
-Níže je uveden graf s naměrenými hodnotami a vývinem střední hodnoty naměrených hodnot - počet měrení byl jeden milion a počátečná hodnota `randomNumber` byl 0x626f6f70.
+Náhodně vygenerované 32 bitové číslo `uint32_t randomNumber` je vygenerované pomocí `RandomNumberGenerator()`, poté je vyděleno maximálním číslem pro rozsah uint32_t plus 1.0. Tato matematická operace vrací číslo z oboru [0,1). Jeho hodnota je převedena na hodnotu typu double a je vrácena.
+Níže je uveden graf s naměřenými hodnotami a vývojem střední hodnoty naměrených hodnot - počet měření byl jeden milion a počáteční hodnota `randomNumber` byla 0x626f6f70.
+
+<img src="C:\Users\ivkas\FIT\5SEM\IMS\ims\doc\random.png" style="zoom:72%;" />
 
 #### Uniformní
 
-Podobně jak ve funkci `Random()` je číslo vygenerované pomocí `RandomNumberGenerator()` a je vyděleno rovnakou hodnotou jak ve funkci `Random()`, avšak hodnota `randomNumber`
-je vynásobena rozdílem mezi vrchní a spodnou hranicí uniformního rozdelení, což navráti hodnotu v oboru [0, MAX) , kde MAX je vrchní hranicí uniformního rozdelení. Pak je
-k tomuto výsledku připočítána spodni hranice rozdelení pro získání čísla z výsledného oboru [MIN, MAX), kde MIN je spodni hranice a MAX je vrchní hranice rozdelení.
-Níže je uveden graf s naměrenými hodnotami a vývinem střední hodnoty naměrených hodnot - počet měrení byl jeden milion, počátečná hodnota `randomNumber` byl 0x626f6f70, spodní hranice byla pět a vrchní deset.
+Podobně jak ve funkci `Random()` je číslo vygenerované pomocí `RandomNumberGenerator()` a je vyděleno stejnou hodnotou jak ve funkci `Random()`, avšak hodnota `randomNumber` je vynásobena rozdílem mezi vrchní a spodní hranicí uniformního rozdelení, což vrátí hodnotu v oboru [0, MAX) , kde MAX je vrchní hranicí uniformního rozdelení. Poté je k tomuto výsledku připočítána spodní hranice rozdělení pro získání čísla z výsledného oboru [MIN, MAX), kde MIN je spodni hranice a MAX je vrchní hranice rozdělení.
+
+Níže je uveden graf s naměřenými hodnotami a vývojem střední hodnoty naměřených hodnot - počet měření byl jeden milion, počáteční hodnota `randomNumber` byla 0x626f6f70, spodní hranice byla 5 a vrchní 10.
+
+<img src="C:\Users\ivkas\FIT\5SEM\IMS\ims\doc\uniform-5-10.png" alt="uniform-5-10" style="zoom:72%;" />
 
 
 #### Exponenciální
 
-Generovali sme hodnoty s exponenciálním rozdelením pomoci vzorce T = F<sup>-1</sup><sub>X</sub>(U), kde F<sup>-1</sup><sub>X</sub> je inverzni distribuční funkce pro exponenciální rozdelení a U je hodnota z rovnoměrného rozdelení z oboru [0,1]. Tento výpočet vychází z metody inverzní transformace, kde pokud X je náhodnou hodnotou ze spojité množiny pro kterou existuje distribuční funkce. Tak potom náhodná proměnná U = F<sub>X</sub>(X) má rovnoměrné rozložení na oboru [0,1]. Takže pokud, U má náhodní rovnoměrné rozložení na oboru [0, 1] a X má distribuční funkci F<sub>X</sub>, tak potom náhodná proměnná T = F<sup>-1</sup><sub>X</sub>(U) má rovnaké rozložení ako X. Tímto procesem dospějeme ke vzorci T = E(X) * log(U), kde U je hodnota získaná za pomoci funkce `Random()`.
+Generovali jsme hodnoty s exponenciálním rozdělením pomoci vzorce T = F<sup>-1</sup><sub>X</sub>(U), kde F<sup>-1</sup><sub>X</sub> je inverzní distribuční funkce pro exponenciální rozdelení a U je hodnota z rovnoměrného rozdelení z oboru [0,1]. Tento výpočet vychází z metody inverzní transformace. Pokud X je náhodnou hodnotou ze spojité množiny pro kterou existuje distribuční funkce, má potom náhodná proměnná U = F<sub>X</sub>(X) rovnoměrné rozložení na oboru [0,1]. Takže jestli U má náhodní rovnoměrné rozložení na oboru [0, 1] a X má distribuční funkci F<sub>X</sub>, má potom náhodná proměnná T = F<sup>-1</sup><sub>X</sub>(U) stejné rozložení jako X. Tímto procesem dospějeme ke vzorci T = E(X) * log(U), kde U je hodnota získaná za pomoci funkce `Random()`.
 
-Níže je uvedem histogram pro naměrené hodnoty z funkce `Exponencial(1)`, počet dílkú je 100 pro obor [0, 10] - počet měrení byl jeden milion, počátečná hodnota `randomNumber` byl 0x626f6f70.
+Níže je uveden histogram pro naměřené hodnoty z funkce `Exponencial(1)`, počet dílků je 100 pro obor [0,10] - počet měření byl jeden milion, počáteční hodnota `randomNumber` byla 0x626f6f70.
 
+<img src="C:\Users\ivkas\FIT\5SEM\IMS\ims\doc\exponential-1.png" alt="exponential-1" style="zoom:72%;" />
+
+<div style="page-break-after: always; break-after: page;"></div>
 
 #### Normální
 
-Generovali sme hodnoty s normálním rozdelením pomocí Box-Mullerovi transformace, kde jsou vygenerovány dvě čisla `z0` a `z1`, ktoré jsou nezávyslé čísla s normálním rozdelením se strědní hodnotou `mu` a rozpltylem `sigma`. Je navráceno jedno z těchto čísel a druhé je uskladněno pro další volání funkce. Tím pádem, funkce je nucena provádet výpočet iba při každém sudém volání funkce, nebo pri změne `mu` anebo `sigma` mezi volaními.
+Generovali jsme hodnoty s normálním rozdělením pomocí Box-Mullerovi transformace, kde jsou vygenerovány dvě čisla `z0` a `z1`, které jsou nezávislými čísly s normálním rozdelením se strědní hodnotou `mu` a rozptylem `sigma`. Je navráceno jedno z těchto čísel a druhé je uloženo pro další volání funkce. Tudíž funkce je nucena provádet výpočet pouze při každém lichém volání funkce, nebo při změně `mu` anebo `sigma` mezi voláními.
 
+Níže je uvedem histogram pro naměřené hodnoty z funkce `Normal(0,1)`, počet dílkú je 100 pro celý obor hodnot - počet měření byl jeden milion, počáteční hodnota `randomNumber` byla 0x626f6f70.
 
-Níže je uvedem histogram pro naměrené hodnoty z funkce `Normal(0,1)`, počet dílkú je 100 pro celý obor hodnot - počet měrení byl jeden milion, počátečná hodnota `randomNumber` byl 0x626f6f70.
+<img src="C:\Users\ivkas\FIT\5SEM\IMS\ims\doc\normal-0-1.png" alt="normal-0-1" style="zoom:72%;" />
 
 ### Systém hromadné obsluhy (`sho.cpp`)
 
@@ -121,6 +130,8 @@ Jsou rozpoznávány pomocí jejich jména. Musí být definovány před spuště
 ### Informační výpisy (`statistics.cpp`)
 
 Obsahuje statickou třídu `Log` obstarávající výpisy o stavu simulátoru a o aktuálně spouštěném eventu.
+
+<div style="page-break-after: always; break-after: page;"></div>
 
 ## Návod k použití
 
@@ -198,13 +209,13 @@ Protože jejich roli v simulaci “přebírají” přiložené eventy, které s
 
 `RandomGenerator::SetSeed(seed)` - nastaví hodnotu seed na požadovanou hodnotu
 
-`RandomGenerator::Random()` - vrátí náhodnou hodnotu z intervalu [0, 1) s rovnoměrným rozdelením
+`RandomGenerator::Random()` - vrátí náhodnou hodnotu z intervalu [0, 1) s rovnoměrným rozdělením
 
-`RandomGenerator::Uniform(low, high)` - vrátí náhodnou hodnotu z intervalu [low, high) s rovnoměrným rozdelením
+`RandomGenerator::Uniform(low, high)` - vrátí náhodnou hodnotu z intervalu [low, high) s rovnoměrným rozdělením
 
-`RandomGenerator::Exponential(mean)` - vrátí náhodnou hodnotu z exponenciální rozložení se středem v mean
+`RandomGenerator::Exponential(mean)` - vrátí náhodnou hodnotu z exponenciálního rozložení se středem v mean
 
-`RandomGenerator::Normal(mean, std_deviation)` - vrátí náhodnout hodnotu z normálního rozložení se středem v mean a standartní odchylkou std_devition
+`RandomGenerator::Normal(mean, std_deviation)` - vrátí náhodnou hodnotu z normálního rozložení se středem v mean a standartní odchylkou std_devition
 
 **Poznámka:** RandomGenerator neošetřuje nevhodné záporné vstupy či výstupy z funkcí generujících náhodná rozložení. Je na uživateli, aby zvážil co generuje a ošetřil případné mezní případy.
 
@@ -228,18 +239,24 @@ Příklad "vlek":
 	- 10% - chyba, nástup se opkauje, kotva jede dál
 	- 90% - 4 min nahoru, kotva jede další 4 min zpět
 
+Příklad byl převzat z prvního democvičení v předmětu IMS - Modelování a simulace, kde byl použit jako ukázka modelování petriho sítí.
+
 ## Abstraktní model
 
-TODO insert petriNet.png
+![petriNet](C:\Users\ivkas\FIT\5SEM\IMS\ims\doc\petriNet.png)
 
 ## Implementace simulace
 
-Podařilo se nám implementovat abstraktní model Petriho sítě v podstate bezezměny. Jednotlivé implementované stavy jsou deklarovány na začátku `simulation.cpp` souboru a dedí své vlastnosti od třídy Event. Její chování je zavedeno pomocí funkcí SeizeFacility, SeizeStorage, Wait, ScheduleEvent, ReleaseFacility a ReleaseStorage, kterých konkrétní implementace najdete ve funkci Behaviour() pro každou třidu. Stavy `kotva` a `stanoviste` byly zavedeny pomocí CreateStorage s kapacitou 40 a CreateFacility respektivne, obě byli zavedeny bez omezení na délku fronty. Zdroje pro generování lyžařů a závodníků, byli implementovány pomocí třídy `EventGenerator` ze simulátoru a délky mezi jejich opakováním jsou dány návratovou hodnotou funkcí `Exponencial(1.0)` a `Exponencial(10.0)` respektivne.
+Podařilo se nám implementovat abstraktní model Petriho sítě se všemi charakteristickými vlastnostmi modelu.
+
+Jednotlivé implementované stavy jsou deklarovány na začátku `simulation.cpp` souboru a dědí své vlastnosti od třídy Event. Kvůli omezení z povahy simulátoru založeného na událostech (eventech) jsou závodníci a lyžaři implementování několika eventy, které se postupně navzájem vytvářejí.
+
+Její chování je zavedeno pomocí funkcí SeizeFacility, SeizeStorage, Wait, ScheduleEvent, ReleaseFacility a ReleaseStorage, jejichž konkrétní implementace lze najít ve funkci `Behaviour()` pro každou třídu. Stavy `kotva` a `stanoviste` byly zavedeny pomocí CreateStorage s kapacitou 40 a CreateFacility respektivne, obě byli zavedeny bez omezení na délku fronty. Zdroje pro generování lyžařů a závodníků byly implementovány pomocí třídy `EventGenerator` ze simulátoru a délky mezi jejich opakováním jsou dány návratovou hodnotou funkcí `Exponencial(1.0)` pro lyžaře a `Exponencial(10.0)` pro závodníky.
+
+Po počátečním testování jsme změnili velikost skladu kotev na 2, aby se vytvořily fronty před zařízením `stanoviste` a projevila se tak lépe funkce priorit v systému, kdy závodník dostane přednost před lyžařem.
 
 <div style="page-break-after: always; break-after: page;"></div>
 
 # 4. Závěr
 
 Přiložené zdrojové kódy simulátoru se dají použít jako primitivní simulační knihovna založená na událostech. Potenciální uživatel může kromě této dokumentace využít k nalezení více informací hlavičkový zdrojový soubor či vytvořený program simulace obsahující většinu výše zmíněných konstrukcí.
-
-TODO Denis nějaký závěr ze simulace? Z úpravy hodnot nebo z generátorů čísel?
