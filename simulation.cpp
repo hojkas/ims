@@ -74,6 +74,7 @@ inline PersonInQueue::PersonInQueue(Event *parent)
 {
 	event_name = parent->event_name;
 	event_id = parent->event_id;
+	priority = parent->priority;
 }
 
 inline void PersonInQueue::Behaviour()
@@ -87,6 +88,7 @@ inline PersonOnLift::PersonOnLift(Event *parent)
 {
 	event_name = parent->event_name;
 	event_id = parent->event_id;
+	priority = parent->priority;
 }
 
 inline void PersonOnLift::Behaviour()
@@ -109,6 +111,7 @@ inline PersonLeavesLift::PersonLeavesLift(Event *parent)
 {
 	event_name = parent->event_name;
 	event_id = parent->event_id;
+	priority = parent->priority;
 }
 
 inline void PersonLeavesLift::Behaviour()
