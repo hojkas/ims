@@ -1,3 +1,7 @@
+# Hodnocení
+
+20/20b
+
 # IMS
 
 ## HOWTO: TEST
